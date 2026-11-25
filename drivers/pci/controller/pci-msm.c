@@ -850,7 +850,7 @@ struct aer_err_source {
 };
 
 /* AER stats for the device */
-struct aer_stats {
+struct msm_aer_stats {
 
 	/*
 	 * Fields for all AER capable devices. They indicate the errors
@@ -1344,7 +1344,7 @@ struct msm_pcie_dev_t {
 
 	bool aer_dump;
 	bool panic_on_aer;
-	struct aer_stats *aer_stats;
+	struct msm_aer_stats *aer_stats;
 	void (*rumi_init)(struct msm_pcie_dev_t *pcie_dev);
 
 	u32 phy_debug_reg_len;
@@ -6750,7 +6750,7 @@ static int msm_pcie_enable_link(struct msm_pcie_dev_t *dev)
 	unsigned long cfg0_ecam_base, cfg0_ecam_limit;
 	unsigned long cfg1_ecam_base, cfg1_ecam_limit;
 	int num_buses = 0x100;
-	struct resource res;
+	u32 bus_range[2];
 
 	if (!dev->parf_ver)
 		dev->parf_ver = readl_relaxed(dev->parf + PCIE20_PARF_VERSION);
@@ -6909,8 +6909,10 @@ static int msm_pcie_enable_link(struct msm_pcie_dev_t *dev)
 	cfg0_ecam_base = dbi->start + SZ_1M;
 	cfg0_ecam_limit = cfg0_ecam_base + SZ_1M - 1;
 
-	if (!of_pci_parse_bus_range(dev->pdev->dev.of_node, &res))
-		num_buses = res.end - res.start + 1;
+	/* of_pci_parse_bus_range() is private to the PCI core since 6.14 */
+	if (!of_property_read_u32_array(dev->pdev->dev.of_node, "bus-range",
+					bus_range, ARRAY_SIZE(bus_range)))
+		num_buses = bus_range[1] - bus_range[0] + 1;
 
 	PCIE_DBG(dev, "RC%d: configure ECAM for bus range:%d\n",
 			dev->rc_idx, num_buses);
@@ -7281,8 +7283,15 @@ static int msm_pcie_config_device_info(struct pci_dev *pcidev, void *pdev)
 	}
 
 	if (pcie_dev->aer_enable) {
-		if (pci_pcie_type(pcidev) == PCI_EXP_TYPE_ROOT_PORT)
-			pcie_dev->aer_stats = pcidev->aer_stats;
+		/*
+		 * The AER interrupt is handled here, not by the PCI core, so
+		 * count the errors of this root complex in the driver's own
+		 * counters (the core keeps its counters private since 6.16).
+		 */
+		if (!pcie_dev->aer_stats)
+			pcie_dev->aer_stats = devm_kzalloc(&pcie_dev->pdev->dev,
+							   sizeof(*pcie_dev->aer_stats),
+							   GFP_KERNEL);
 
 		if (msm_pcie_enable_pcie_error_reporting(pcidev))
 			PCIE_ERR(pcie_dev,
@@ -7851,7 +7860,7 @@ static void msm_pci_dev_aer_stats_incr(struct pci_dev *pdev,
 	unsigned long status = info->status & ~info->mask;
 	int i, max = -1;
 	u64 *counter = NULL;
-	struct aer_stats *aer_stats = pdev->aer_stats;
+	struct msm_aer_stats *aer_stats = info->rdev->aer_stats;
 
 	if (!aer_stats)
 		return;
@@ -7878,10 +7887,10 @@ static void msm_pci_dev_aer_stats_incr(struct pci_dev *pdev,
 		counter[i]++;
 }
 
-static void msm_pci_rootport_aer_stats_incr(struct pci_dev *pdev,
+static void msm_pci_rootport_aer_stats_incr(struct msm_pcie_dev_t *pcie_dev,
 					    struct aer_err_source *e_src)
 {
-	struct aer_stats *aer_stats = pdev->aer_stats;
+	struct msm_aer_stats *aer_stats = pcie_dev->aer_stats;
 
 	if (!aer_stats)
 		return;
@@ -8292,7 +8301,7 @@ static void msm_aer_isr_one_error(struct msm_pcie_dev_t *dev,
 
 	e_info.rdev = dev;
 
-	msm_pci_rootport_aer_stats_incr(dev->dev, e_src);
+	msm_pci_rootport_aer_stats_incr(dev, e_src);
 
 	/*
 	 * There is a possibility that both correctable error and
