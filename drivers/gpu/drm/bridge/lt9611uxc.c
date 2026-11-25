@@ -117,7 +117,7 @@ struct lt9611uxc {
 	enum lt9611uxc_fw_upgrade_status fw_status;
 };
 
-void lt9611uxc_hpd_work(struct work_struct *work)
+static void lt9611uxc_hpd_work(struct work_struct *work)
 {
 	char name[32], status[32];
 	char *envp[5];
@@ -278,7 +278,7 @@ static int lt9611uxc_read(struct lt9611uxc *pdata, u8 reg, char *buf, u32 size)
 	return 0;
 }
 
-void lt9611uxc_config(struct lt9611uxc *pdata)
+static void lt9611uxc_config(struct lt9611uxc *pdata)
 {
 	struct lt9611uxc_reg_cfg reg_cfg[] = {
 		{0xFF, 0x80},
@@ -293,7 +293,7 @@ void lt9611uxc_config(struct lt9611uxc *pdata)
 	lt9611uxc_write_array(pdata, reg_cfg, ARRAY_SIZE(reg_cfg));
 }
 
-u8 lt9611uxc_get_version(struct lt9611uxc *pdata)
+static u8 lt9611uxc_get_version(struct lt9611uxc *pdata)
 {
 	u8 revison = 0;
 
@@ -313,7 +313,7 @@ u8 lt9611uxc_get_version(struct lt9611uxc *pdata)
 	return revison;
 }
 
-void lt9611uxc_flash_write_en(struct lt9611uxc *pdata)
+static void lt9611uxc_flash_write_en(struct lt9611uxc *pdata)
 {
 	struct lt9611uxc_reg_cfg reg_cfg0[] = {
 		{0xFF, 0x81},
@@ -333,7 +333,7 @@ void lt9611uxc_flash_write_en(struct lt9611uxc *pdata)
 	lt9611uxc_write_array(pdata, reg_cfg1, ARRAY_SIZE(reg_cfg1));
 }
 
-void lt9611uxc_block_erase(struct lt9611uxc *pdata)
+static void lt9611uxc_block_erase(struct lt9611uxc *pdata)
 {
 	struct lt9611uxc_reg_cfg reg_cfg[] = {
 		{0xFF, 0x80},
@@ -352,7 +352,7 @@ void lt9611uxc_block_erase(struct lt9611uxc *pdata)
 	msleep(3000);
 }
 
-void lt9611uxc_flash_read_addr_set(struct lt9611uxc *pdata, u32 addr)
+static void lt9611uxc_flash_read_addr_set(struct lt9611uxc *pdata, u32 addr)
 {
 	struct lt9611uxc_reg_cfg reg_cfg[] = {
 		{0x5E, 0x5F},
@@ -369,7 +369,7 @@ void lt9611uxc_flash_read_addr_set(struct lt9611uxc *pdata, u32 addr)
 	lt9611uxc_write_array(pdata, reg_cfg, ARRAY_SIZE(reg_cfg));
 }
 
-void lt9611uxc_fw_read_back(struct lt9611uxc *pdata, u8 *buff, int size)
+static void lt9611uxc_fw_read_back(struct lt9611uxc *pdata, u8 *buff, int size)
 {
 	u8 page_data[32];
 	int page_number = 0, i = 0, addr = 0;
@@ -399,7 +399,7 @@ void lt9611uxc_fw_read_back(struct lt9611uxc *pdata, u8 *buff, int size)
 	}
 }
 
-void lt9611uxc_flash_write_config(struct lt9611uxc *pdata)
+static void lt9611uxc_flash_write_config(struct lt9611uxc *pdata)
 {
 	struct lt9611uxc_reg_cfg reg_cfg[] = {
 		{0xFF, 0x80},
@@ -413,7 +413,7 @@ void lt9611uxc_flash_write_config(struct lt9611uxc *pdata)
 	lt9611uxc_write_array(pdata, reg_cfg, ARRAY_SIZE(reg_cfg));
 }
 
-void lt9611uxc_flash_write_addr_set(struct lt9611uxc *pdata, u32 addr)
+static void lt9611uxc_flash_write_addr_set(struct lt9611uxc *pdata, u32 addr)
 {
 	struct lt9611uxc_reg_cfg reg_cfg[] = {
 		{0x5B, (addr & 0xFF0000) >> 16},
@@ -426,7 +426,7 @@ void lt9611uxc_flash_write_addr_set(struct lt9611uxc *pdata, u32 addr)
 	lt9611uxc_write_array(pdata, reg_cfg, ARRAY_SIZE(reg_cfg));
 }
 
-void lt9611uxc_firmware_write(struct lt9611uxc *pdata, const u8 *f_data,
+static void lt9611uxc_firmware_write(struct lt9611uxc *pdata, const u8 *f_data,
 		int size)
 {
 	u8 last_buf[32];
@@ -460,7 +460,7 @@ void lt9611uxc_firmware_write(struct lt9611uxc *pdata, const u8 *f_data,
 		size, total_page, rest_data);
 }
 
-void lt9611uxc_firmware_upgrade(struct lt9611uxc *pdata,
+static void lt9611uxc_firmware_upgrade(struct lt9611uxc *pdata,
 			const struct firmware *cfg)
 {
 	int i = 0;
@@ -857,7 +857,7 @@ static void lt9611uxc_ctl_disable(struct lt9611uxc *pdata)
 	lt9611uxc_write_byte(pdata, 0xEE, 0x00);
 }
 
-void lt9611uxc_edid_en(struct lt9611uxc *pdata)
+static void lt9611uxc_edid_en(struct lt9611uxc *pdata)
 {
 	lt9611uxc_write_byte(pdata, 0xFF, 0xB0);
 	lt9611uxc_write_byte(pdata, 0x0B, 0x10);
@@ -1452,7 +1452,7 @@ skip_read_edid:
 }
 
 static enum drm_mode_status lt9611uxc_connector_mode_valid(
-	struct drm_connector *connector, struct drm_display_mode *drm_mode)
+	struct drm_connector *connector, const struct drm_display_mode *drm_mode)
 {
 	struct lt9611uxc *pdata = connector_to_lt9611(connector);
 	struct drm_display_mode *mode, *n;
@@ -1519,7 +1519,9 @@ static const struct drm_connector_funcs lt9611uxc_connector_funcs = {
 };
 
 
-static int lt9611uxc_bridge_attach(struct drm_bridge *bridge, enum drm_bridge_attach_flags flags)
+static int lt9611uxc_bridge_attach(struct drm_bridge *bridge,
+				   struct drm_encoder *encoder,
+				   enum drm_bridge_attach_flags flags)
 {
 	struct mipi_dsi_host *host;
 	struct mipi_dsi_device *dsi;
