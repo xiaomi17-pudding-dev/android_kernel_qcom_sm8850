@@ -217,7 +217,7 @@ static int charger_usb_psy_init(struct usb_psy_info *info)
 	int rc = 0;
 
 	usb_cfg.drv_data = info;
-	usb_cfg.of_node = info->dev->of_node;
+	usb_cfg.fwnode = of_fwnode_handle(info->dev->of_node);
 	info->usb_psy =
 		devm_power_supply_register(info->dev, &_usb_psy_desc, &usb_cfg);
 	if (IS_ERR(info->usb_psy)) {

@@ -419,7 +419,7 @@ static int battery_psy_init(struct batt_psy_info *info)
 	int rc = 0;
 
 	batt_cfg.drv_data = info;
-	batt_cfg.of_node = info->dev->of_node;
+	batt_cfg.fwnode = of_fwnode_handle(info->dev->of_node);
 	info->batt_psy = devm_power_supply_register(info->dev, &_batt_psy_desc,
 						    &batt_cfg);
 	if (IS_ERR(info->batt_psy)) {

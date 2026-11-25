@@ -188,7 +188,7 @@ static int charger_wireless_psy_init(struct wireless_psy_info *info)
 	int rc = 0;
 
 	wireless_cfg.drv_data = info;
-	wireless_cfg.of_node = info->dev->of_node;
+	wireless_cfg.fwnode = of_fwnode_handle(info->dev->of_node);
 	info->wireless_psy = devm_power_supply_register(
 		info->dev, &_wireless_psy_desc, &wireless_cfg);
 	if (IS_ERR(info->wireless_psy)) {
