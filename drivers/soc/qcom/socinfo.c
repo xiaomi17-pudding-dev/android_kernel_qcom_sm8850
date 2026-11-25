@@ -1463,7 +1463,7 @@ static void socinfo_populate_sysfs(struct qcom_socinfo *qcom_socinfo)
 	qcom_socinfo->attr.custom_attr_group = &custom_soc_attr_group;
 }
 
-void socinfo_enumerate_partinfo_details(void)
+static void socinfo_enumerate_partinfo_details(void)
 {
 	unsigned int partinfo_array_offset;
 	unsigned int nnum_partname_mapping;

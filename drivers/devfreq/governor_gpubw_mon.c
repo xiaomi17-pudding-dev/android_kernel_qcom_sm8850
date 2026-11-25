@@ -325,13 +325,13 @@ static struct devfreq_governor devfreq_gpubw = {
 	.flags = DEVFREQ_GOV_FLAG_IMMUTABLE,
 };
 
-int devfreq_gpubw_init(void)
+static int devfreq_gpubw_init(void)
 {
 	return devfreq_add_governor(&devfreq_gpubw);
 }
 subsys_initcall(devfreq_gpubw_init);
 
-void devfreq_gpubw_exit(void)
+static void devfreq_gpubw_exit(void)
 {
 	int ret;
 

@@ -3,6 +3,7 @@
  * Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
  */
 
+#include <linux/cpu_phys_log_map.h>
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>

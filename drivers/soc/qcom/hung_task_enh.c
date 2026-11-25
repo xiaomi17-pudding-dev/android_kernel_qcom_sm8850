@@ -48,7 +48,7 @@ struct hung_task_enh_data {
 
 static struct hung_task_enh_data hung_task_enh;
 
-void qcom_before_check_tasks(void *ignore, struct task_struct *t, unsigned long timeout,
+static void qcom_before_check_tasks(void *ignore, struct task_struct *t, unsigned long timeout,
 							bool *need_check)
 {
 	struct walt_task_struct *wts = (struct walt_task_struct *)android_task_vendor_data(t);
@@ -71,7 +71,7 @@ void qcom_before_check_tasks(void *ignore, struct task_struct *t, unsigned long 
 		hung_task_enh.curr_iowait_task_cnt++;
 }
 
-void qcom_check_tasks_done(void *ignore, void *extra)
+static void qcom_check_tasks_done(void *ignore, void *extra)
 {
 	if (hung_task_enh.curr_iowait_task_cnt >= hung_task_enh.max_iowait_task_cnt)
 		hung_task_enh.curr_iowait_timeout_cnt++;

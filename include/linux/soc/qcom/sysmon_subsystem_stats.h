@@ -223,4 +223,5 @@ int sysmon_stats_query_hvx_utlization(u32 *hvx_util);
  *        FAILURE (Non-zero) if Query could not be processed, refer error codes.
  */
 int sysmon_stats_query_hmx_utlization(u32 *hmx_util);
+int sysmon_stats_query_ddr_residency(struct sysmon_smem_ddr_stats *sysmon_ddr_stats);
 #endif

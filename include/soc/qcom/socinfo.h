@@ -147,6 +147,7 @@ char *socinfo_get_partinfo_part_name(unsigned int part_id);
 uint32_t socinfo_get_partinfo_chip_id(unsigned int part_id);
 uint32_t socinfo_get_partinfo_vulkan_id(unsigned int part_id);
 uint32_t socinfo_get_cluster_info(void);
+uint32_t socinfo_get_package_type(void);
 bool socinfo_get_part_info(enum subset_part_type part);
 int socinfo_get_part_count(enum subset_part_type part);
 int socinfo_get_subpart_info(enum subset_part_type part,
@@ -188,6 +189,10 @@ uint32_t socinfo_get_partinfo_vulkan_id(unsigned int part_id)
 	return 0;
 }
 uint32_t socinfo_get_cluster_info(void)
+{
+	return 0;
+}
+static inline uint32_t socinfo_get_package_type(void)
 {
 	return 0;
 }

@@ -27,13 +27,13 @@ static struct devfreq_governor msm_adreno_ro = {
 	.event_handler = adreno_passive_event_handler,
 };
 
-int msm_adreno_passive_init(void)
+static int msm_adreno_passive_init(void)
 {
 	return devfreq_add_governor(&msm_adreno_ro);
 }
 subsys_initcall(msm_adreno_passive_init);
 
-void msm_adreno_passive_exit(void)
+static void msm_adreno_passive_exit(void)
 {
 	int ret;
 

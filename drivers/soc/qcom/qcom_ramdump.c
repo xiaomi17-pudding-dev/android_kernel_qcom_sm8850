@@ -134,7 +134,7 @@ EXPORT_SYMBOL_GPL(coredump_cleanup);
  *
  * Return: 0 on success, negative errno on error.
  */
-int coredump_add_segment(struct list_head *head, void *va, dma_addr_t da, size_t size)
+static int coredump_add_segment(struct list_head *head, void *va, dma_addr_t da, size_t size)
 {
 	struct qcom_dump_segment *segment;
 
