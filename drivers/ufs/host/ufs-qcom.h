@@ -638,32 +638,6 @@ static inline bool is_shared_ice_supported(struct ufs_qcom_host *host)
 	return !!(host->caps & UFS_QCOM_CAP_SHARED_ICE);
 }
 
-/**
- * ufshcd_dme_rmw - get modify set a dme attribute
- * @hba - per adapter instance
- * @mask - mask to apply on read value
- * @val - actual value to write
- * @attr - dme attribute
- */
-static inline int ufshcd_dme_rmw(struct ufs_hba *hba, u32 mask,
-				 u32 val, u32 attr)
-{
-	u32 cfg = 0;
-	int err = 0;
-
-	err = ufshcd_dme_get(hba, UIC_ARG_MIB(attr), &cfg);
-	if (err)
-		goto out;
-
-	cfg &= ~mask;
-	cfg |= (val & mask);
-
-	err = ufshcd_dme_set(hba, UIC_ARG_MIB(attr), cfg);
-
-out:
-	return err;
-}
-
 /*
  *  IOCTL opcode for ufs queries has the following opcode after
  *  SCSI_IOCTL_GET_PCI
