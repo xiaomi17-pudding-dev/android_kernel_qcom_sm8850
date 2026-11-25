@@ -1840,10 +1840,10 @@ static int uaudio_qmi_plat_probe(struct platform_device *pdev)
 		return -ENODEV;
 	}
 
-	uaudio_qdev->domain = iommu_domain_alloc(pdev->dev.bus);
-	if (!uaudio_qdev->domain) {
+	uaudio_qdev->domain = iommu_paging_domain_alloc(&pdev->dev);
+	if (IS_ERR(uaudio_qdev->domain)) {
 		dev_err(&pdev->dev, "failed to allocate iommu domain\n");
-		return -ENODEV;
+		return PTR_ERR(uaudio_qdev->domain);
 	}
 
 	/* attach to external processor iommu */
