@@ -67,6 +67,8 @@ def define_techpack_modules(target, msm_target, variant, arch = None):
         "//{}/qcom/opensource/wlan/platform:{}_cnss_utils".format(SOC_MODULES_REPO_PATH, arch_target),
         "//{}/qcom/opensource/wlan/platform:{}_wlan_firmware_service".format(SOC_MODULES_REPO_PATH, arch_target),
         "//{}/nxp/opensource/driver:{}_nxp-nci".format(SOC_MODULES_REPO_PATH, arch_target),
+        "//{}/st/opensource/driver:{}_stm_nfc_i2c".format(SOC_MODULES_REPO_PATH, arch_target),
+        "//{}/st/opensource/eSE-driver:{}_stm_st54se_gpio".format(SOC_MODULES_REPO_PATH, arch_target),
     ]
 
     # 1. Define how files are packaged (permissions + flattening)
