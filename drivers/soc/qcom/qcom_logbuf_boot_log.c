@@ -19,7 +19,7 @@ static unsigned int boot_log_buf_left;
 static struct kmsg_dump_iter iter;
 static struct task_struct *dump_thread;
 
-int dump_thread_func(void *arg)
+static int dump_thread_func(void *arg)
 {
 	size_t text_len;
 
@@ -98,7 +98,7 @@ static int __init boot_log_dump_init(void)
 }
 late_initcall(boot_log_dump_init);
 
-void boot_log_dump_remove(void)
+static void boot_log_dump_remove(void)
 {
 	if (dump_thread)
 		kthread_stop(dump_thread);

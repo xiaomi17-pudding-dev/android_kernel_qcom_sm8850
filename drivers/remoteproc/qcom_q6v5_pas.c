@@ -263,7 +263,7 @@ custom_segment_dump:
 	return 0;
 }
 
-void adsp_segment_dump(struct rproc *rproc, struct rproc_dump_segment *segment,
+static void adsp_segment_dump(struct rproc *rproc, struct rproc_dump_segment *segment,
 		     void *dest, size_t offset, size_t size)
 {
 	struct qcom_adsp *adsp = rproc->priv;
@@ -1442,7 +1442,7 @@ static unsigned long adsp_panic(struct rproc *rproc)
  *        0 if the value has been read and the state has been set
  *
  */
-void read_early_boot_register(struct timer_list *timer)
+static void read_early_boot_register(struct timer_list *timer)
 {
 	struct qcom_adsp *adsp = NULL;
 	int ret = ENODATA;

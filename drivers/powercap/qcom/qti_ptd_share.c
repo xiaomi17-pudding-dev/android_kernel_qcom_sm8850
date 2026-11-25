@@ -18,7 +18,7 @@
 static uint8_t num_nodes;
 static char *smem_buffer;
 
-int qptm_share_node_info_cb(struct qptm *qptm, void *data)
+static int qptm_share_node_info_cb(struct qptm *qptm, void *data)
 {
 	int ret;
 	struct pdt_priv *pdt = (struct pdt_priv *)data;
@@ -55,7 +55,7 @@ int qptm_share_node_info_cb(struct qptm *qptm, void *data)
 	return 0;
 }
 
-int qti_pdt_init_data_sharing(struct pdt_priv *pdt)
+static int qti_pdt_init_data_sharing(struct pdt_priv *pdt)
 {
 	int ret;
 	uint64_t xo_tick;
@@ -112,7 +112,7 @@ int qti_pdt_init_data_sharing(struct pdt_priv *pdt)
 	return 0;
 }
 
-int qptm_share_node_data_cb(struct qptm *qptm, void *data)
+static int qptm_share_node_data_cb(struct qptm *qptm, void *data)
 {
 	int ret;
 	struct pdt_priv *pdt = (struct pdt_priv *)data;
@@ -163,7 +163,7 @@ int qptm_share_node_data_cb(struct qptm *qptm, void *data)
 	return 0;
 }
 
-int qti_pdt_share_updated_data_cb(struct notifier_block *nb, unsigned long action, void *data)
+static int qti_pdt_share_updated_data_cb(struct notifier_block *nb, unsigned long action, void *data)
 {
 	struct pdt_priv *pdt = container_of(nb, struct pdt_priv, pdt_nb);
 	uint64_t xo_tick;

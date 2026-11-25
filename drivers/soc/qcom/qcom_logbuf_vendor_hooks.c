@@ -19,7 +19,7 @@
 #include "kernel/printk/printk_ringbuffer.h"
 #include "debug_symbol.h"
 
-void register_log_minidump(struct printk_ringbuffer *prb)
+static void register_log_minidump(struct printk_ringbuffer *prb)
 {
 	struct prb_desc_ring descring;
 	struct prb_data_ring textdata_ring;

@@ -546,7 +546,7 @@ static int crm_get_channel(struct crm_drv *drv, enum channel_type ch_type, u32 *
 	return 0;
 }
 
-int crm_channel_switch_complete(const struct crm_drv *drv, u32 ch)
+static int crm_channel_switch_complete(const struct crm_drv *drv, u32 ch)
 {
 	u32 sts;
 	int retry = 100, ret = 0;
@@ -588,7 +588,7 @@ int crm_channel_switch_complete(const struct crm_drv *drv, u32 ch)
  * * 0			- Success
  * * -Error             - Error code
  */
-int crm_switch_channel(const struct crm_drv *drv, u32 ch)
+static int crm_switch_channel(const struct crm_drv *drv, u32 ch)
 {
 	write_crm_channel(drv, CHN_UPDATE, BIT(ch));
 

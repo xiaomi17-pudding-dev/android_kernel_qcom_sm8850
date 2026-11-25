@@ -113,7 +113,7 @@ struct qcom_spss {
 
 static void read_sp2cl_debug_registers(struct qcom_spss *spss);
 
-int qcom_rproc_toggle_load_state(struct qmp *qmp, const char *name, bool enable)
+static int qcom_rproc_toggle_load_state(struct qmp *qmp, const char *name, bool enable)
 {
 	char buf[QMP_MSG_LEN] = {};
 
