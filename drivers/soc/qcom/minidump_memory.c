@@ -163,10 +163,9 @@ static void md_dump_meminfo(struct seq_buf *m)
 #endif
 	show_val_kb(m, "PageTables:     ",
 		    global_node_page_state(NR_PAGETABLE));
-	show_val_kb(m, "Bounce:         ",
-		    global_zone_page_state(NR_BOUNCE));
-	show_val_kb(m, "WritebackTmp:   ",
-		    global_node_page_state(NR_WRITEBACK_TEMP));
+	/* Both counters are gone (6.16, 6.17): print 0, as /proc/meminfo does */
+	show_val_kb(m, "Bounce:         ", 0);
+	show_val_kb(m, "WritebackTmp:   ", 0);
 	seq_buf_printf(m, "VmallocTotal:   %8lu kB\n",
 		   (unsigned long)VMALLOC_TOTAL >> 10);
 	show_val_kb(m, "VmallocUsed: ", vmalloc_nr_pages());
@@ -281,7 +280,7 @@ static void md_dump_slabinfo(struct seq_buf *m)
 static inline void md_dump_slabinfo(void) {}
 #endif /* CONFIG_SLUB_DEBUG */
 
-bool md_register_memory_dump(int size, char *name)
+static bool md_register_memory_dump(int size, char *name)
 {
 	struct md_region md_entry;
 	void *buffer_start;
@@ -330,7 +329,7 @@ bool md_register_memory_dump(int size, char *name)
 	return true;
 }
 
-bool md_unregister_memory_dump(char *name)
+static bool md_unregister_memory_dump(char *name)
 {
 	struct page *page;
 	struct md_region mdr;
@@ -403,7 +402,7 @@ struct accounted_call_site {
 	char name[50];
 };
 
-bool is_page_owner_enabled(void)
+static bool is_page_owner_enabled(void)
 {
 	if (md_debug_page_owner_inited &&
 		atomic_read(&md_debug_page_owner_inited->enabled))
@@ -442,7 +441,7 @@ static bool check_unaccounted(char *buf, ssize_t count,
 	unsigned int nr_entries;
 	struct accounted_call_site *call_site;
 
-	if ((page->flags &
+	if ((page->flags.f &
 		((1UL << PG_lru) | (1UL << PG_swapbacked))))
 		return false;
 
@@ -493,12 +492,12 @@ static ssize_t dump_page_owner_md(char *buf, size_t count,
 					goto dump;
 				break;
 			case 0x4:
-				if (page->flags & (1UL << PG_swapbacked))
+				if (page->flags.f & (1UL << PG_swapbacked))
 					goto dump;
 				break;
 			case 0x8:
-				if ((page->flags & (1UL << PG_lru)) &&
-					~(page->flags & (1UL << PG_swapbacked)))
+				if ((page->flags.f & (1UL << PG_lru)) &&
+					~(page->flags.f & (1UL << PG_swapbacked)))
 					goto dump;
 				break;
 			default:
@@ -1084,6 +1083,28 @@ static inline void md_dump_slabowner(char *m, size_t dump_size) {}
 static inline void md_debugfs_slabowner(struct dentry *minidump_dir) {}
 #endif	/* CONFIG_SLUB_DEBUG */
 
+/*
+ * Call fn for every dma-buf until it returns non-zero, holding a reference
+ * on the buffer while fn runs (get_dmabuf_debugfs_data() is gone in 6.18).
+ */
+static int md_for_each_dmabuf(int (*fn)(const struct dma_buf *, void *),
+			      void *private)
+{
+	struct dma_buf *dmabuf;
+	int ret = 0;
+
+	for (dmabuf = dma_buf_iter_begin(); dmabuf;
+	     dmabuf = dma_buf_iter_next(dmabuf)) {
+		ret = fn(dmabuf, private);
+		if (ret) {
+			dma_buf_put(dmabuf);
+			break;
+		}
+	}
+
+	return ret;
+}
+
 static int dump_bufinfo(const struct dma_buf *buf_obj, void *private)
 {
 	int ret;
@@ -1191,7 +1212,7 @@ static void md_dma_buf_info(char *m, size_t dump_size)
 			"size", "flags", "mode", "count", "ino");
 	buf.offset = ret;
 
-	ret = get_dmabuf_debugfs_data(dump_bufinfo, (void *)&dma_buf_priv);
+	ret = md_for_each_dmabuf(dump_bufinfo, (void *)&dma_buf_priv);
 	if (ret)
 		pr_err("Error occurred during dmabuf debugfs data collection!\n");
 
