@@ -318,7 +318,7 @@ static bool gic_need_class_update(u32 irq, bool is_class0, bool is_class1)
 	return true;
 }
 
-void gic_do_class_update_virtual(
+static void gic_do_class_update_virtual(
 		void __iomem *base, u32 hwirq,
 		bool is_class0, bool is_class1)
 {
@@ -333,7 +333,7 @@ void gic_do_class_update_virtual(
 	writel_relaxed(val, reg);
 }
 
-void gic_do_class_update_physical(
+static void gic_do_class_update_physical(
 		void __iomem *base, u32 irq,
 		bool is_class0, bool is_class1, u64 *affinity)
 {
@@ -368,7 +368,7 @@ void gic_do_class_update_physical(
 	pr_debug("Set class of hwirq: %d class: %#x\n", (irq + 32), val);
 }
 
-void gic_do_class_update(
+static void gic_do_class_update(
 	void __iomem *base, u32 irq, bool is_class0,
 	bool is_class1, u64 *affinity)
 {
@@ -618,7 +618,7 @@ static void affinity_initialize_workfn(struct work_struct *work)
 		gic_chip = READ_ONCE(gic_routing_data.gic_chip);
 	}
 
-	for (i = 1; i < nr_irqs; i++) {
+	for (i = 1; i < irq_get_nr_irqs(); i++) {
 		if (atomic_add_return(0,
 		    &gic_routing_data.abort_balancing))
 			return;
@@ -732,7 +732,7 @@ static int gic_affinity_cpu_offline(unsigned int cpu)
 	return 0;
 }
 
-void gic_irq_handler_entry_notifer(void *ignore, int irq,
+static void gic_irq_handler_entry_notifer(void *ignore, int irq,
 					struct irqaction *action)
 {
 	struct irq_chip *gic_chip = NULL;
