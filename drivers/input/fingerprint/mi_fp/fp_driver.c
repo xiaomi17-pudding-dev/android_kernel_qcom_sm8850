@@ -1570,7 +1570,7 @@ static struct platform_driver fp_platform_driver = {
 		   .of_match_table = fp_of_match,
 		   },
 	.probe = fp_probe,
-	.remove_new	= fp_remove,
+	.remove	= fp_remove,
 	.resume = fp_resume,
 	.suspend = fp_suspend,
 };
