@@ -635,7 +635,7 @@ static __maybe_unused int sc96281_rx_config_bpp_fod(struct sc96281 *sc,
 	return ret;
 }
 
-__maybe_unused int sc96281_rx_config_epp_fod(struct sc96281 *sc,
+static __maybe_unused int sc96281_rx_config_epp_fod(struct sc96281 *sc,
 					     fod_type_t *fod)
 {
 	int ret;
@@ -648,7 +648,7 @@ __maybe_unused int sc96281_rx_config_epp_fod(struct sc96281 *sc,
 	return ret;
 }
 
-int sc96281_set_fod(struct sc96281 *sc, fod_params_t *fod_params)
+static int sc96281_set_fod(struct sc96281 *sc, fod_params_t *fod_params)
 {
 	int ret = 0;
 
@@ -665,7 +665,7 @@ int sc96281_set_fod(struct sc96281 *sc, fod_params_t *fod_params)
 	return ret;
 }
 
-int sc96281_rx_reneg(struct sc96281 *sc, int reneg_W)
+static int sc96281_rx_reneg(struct sc96281 *sc, int reneg_W)
 {
 	int ret;
 	contract_t req;
@@ -687,7 +687,7 @@ int sc96281_rx_reneg(struct sc96281 *sc, int reneg_W)
 	return sc96281_rx_set_cmd(sc, AP_CMD_RX_RENEG);
 }
 
-int sc96281_vsys_ctrl(struct sc96281 *sc, bool enable)
+static int sc96281_vsys_ctrl(struct sc96281 *sc, bool enable)
 {
 	int ret;
 	uint8_t vdd = enable ? 3 : 0;
@@ -702,7 +702,7 @@ int sc96281_vsys_ctrl(struct sc96281 *sc, bool enable)
 	return ret;
 }
 
-int sc96281_rx_clr_int(struct sc96281 *sc, uint32_t rxint)
+static int sc96281_rx_clr_int(struct sc96281 *sc, uint32_t rxint)
 {
 	int ret;
 
@@ -714,7 +714,7 @@ int sc96281_rx_clr_int(struct sc96281 *sc, uint32_t rxint)
 	return ret;
 }
 
-int sc96281_rx_get_int(struct sc96281 *sc, uint32_t *rxint)
+static int sc96281_rx_get_int(struct sc96281 *sc, uint32_t *rxint)
 {
 	int ret;
 
@@ -761,7 +761,7 @@ static int sc96281_tx_enable(struct sc96281 *sc, bool enable)
 	return ret;
 }
 
-__maybe_unused int sc96281_tx_get_ce_value(struct sc96281 *sc, int8_t *ce)
+static __maybe_unused int sc96281_tx_get_ce_value(struct sc96281 *sc, int8_t *ce)
 {
 	int ret;
 
@@ -795,7 +795,7 @@ static int sc96281_tx_fod_enable(struct sc96281 *sc, bool enable)
 	return ret;
 }
 
-__maybe_unused int sc96281_tx_send_fsk_pkt(struct sc96281 *sc, fsk_pkt_t *fsk)
+static __maybe_unused int sc96281_tx_send_fsk_pkt(struct sc96281 *sc, fsk_pkt_t *fsk)
 {
 	int ret;
 
@@ -836,7 +836,7 @@ __maybe_unused static int sc96281_tx_recv_ask_pkt(struct sc96281 *sc,
 	return ret;
 }
 
-int sc96281_tx_clr_int(struct sc96281 *sc, uint32_t txint)
+static int sc96281_tx_clr_int(struct sc96281 *sc, uint32_t txint)
 {
 	int ret;
 
@@ -848,7 +848,7 @@ int sc96281_tx_clr_int(struct sc96281 *sc, uint32_t txint)
 	return ret;
 }
 
-int sc96281_tx_get_int(struct sc96281 *sc, uint32_t *txint)
+static int sc96281_tx_get_int(struct sc96281 *sc, uint32_t *txint)
 {
 	int ret;
 

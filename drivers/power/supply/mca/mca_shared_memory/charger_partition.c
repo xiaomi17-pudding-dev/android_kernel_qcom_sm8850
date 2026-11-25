@@ -462,7 +462,7 @@ int charger_partition_write_remove_temp_limit(int val)
 }
 EXPORT_SYMBOL(charger_partition_write_remove_temp_limit);
 
-int charger_partition_read_remove_temp_limit(int *val)
+static int __maybe_unused charger_partition_read_remove_temp_limit(int *val)
 {
 	charger_partition_info_1 info_1 = { 0 };
 
@@ -889,7 +889,7 @@ static bool get_charger_partition_info(void)
 	return true;
 }
 
-int check_charger_partition_header(void)
+static int check_charger_partition_header(void)
 {
 	int ret = 0;
 	charger_partition_header *header = NULL;

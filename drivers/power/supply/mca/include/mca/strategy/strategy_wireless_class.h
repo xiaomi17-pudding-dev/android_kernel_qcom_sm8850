@@ -47,6 +47,12 @@ int mca_wireless_rev_enable_reverse_charge(bool enable);
 int mca_wireless_rev_set_firmware_state(int state);
 int mca_wireless_rev_get_rev_boost_default(int *rev_boost_default);
 int mca_wireless_rev_get_reverse_chg(bool *reverse_chg_en);
+int mca_wireless_rev_get_firmware_state(int *state);
+int mca_wireless_rev_set_reverse_chg(bool reverse_chg_en);
+
+struct notifier_block;
+int pen_charge_state_notifier_register_client(struct notifier_block *nb);
+int pen_charge_state_notifier_unregister_client(struct notifier_block *nb);
 int mca_wireless_rev_get_reverse_chg_state(int *state);
 int mca_wireless_rev_get_user_reverse_chg(bool *user_reverse_chg);
 int mca_wireless_rev_set_user_reverse_chg(bool user_reverse_chg);
