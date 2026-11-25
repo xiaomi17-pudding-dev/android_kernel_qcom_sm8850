@@ -1,7 +1,8 @@
 load(":drivers/block/zram/modules.bzl", register_zram = "register_modules")
 
 def register_modules(registry):
-    register_zram(registry)
+    # android17-6.18: the vendor zram (QPACE) is not ported; the GKI module is used
+    # register_zram(registry)
 
     registry.register(
         name = "drivers/block/virtio_blk",

@@ -11,6 +11,7 @@ def register_modules(registry):
     register_ivers(registry)
     register_rnel(registry)
     register_b(registry)
-    register_(registry)
+    # android17-6.18: the vendor zsmalloc (mm/) is not ported; the GKI module is used
+    # register_(registry)
     register_t(registry)
     register_und(registry)
