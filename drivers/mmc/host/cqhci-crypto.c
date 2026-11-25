@@ -92,11 +92,11 @@ static int cqhci_crypto_keyslot_program(struct blk_crypto_profile *profile,
 
 	if (ccap_array[cap_idx].algorithm_id == CQHCI_CRYPTO_ALG_AES_XTS) {
 		/* In XTS mode, the blk_crypto_key's size is already doubled */
-		memcpy(cfg.crypto_key, key->raw, key->size/2);
+		memcpy(cfg.crypto_key, key->bytes, key->size/2);
 		memcpy(cfg.crypto_key + CQHCI_CRYPTO_KEY_MAX_SIZE/2,
-		       key->raw + key->size/2, key->size/2);
+		       key->bytes + key->size/2, key->size/2);
 	} else {
-		memcpy(cfg.crypto_key, key->raw, key->size);
+		memcpy(cfg.crypto_key, key->bytes, key->size);
 	}
 
 	err = cqhci_crypto_program_key(cq_host, &cfg, slot);
