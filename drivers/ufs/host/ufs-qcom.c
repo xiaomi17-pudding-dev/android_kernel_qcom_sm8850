@@ -686,34 +686,7 @@ static inline int ufs_qcom_ice_suspend(struct ufs_qcom_host *host)
 	return 0;
 }
 
-static int ufs_qcom_ice_program_key(struct ufs_hba *hba,
-				    const union ufs_crypto_cfg_entry *cfg,
-				    int slot)
-{
-	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-	union ufs_crypto_cap_entry cap;
-	bool config_enable =
-		cfg->config_enable & UFS_CRYPTO_CONFIGURATION_ENABLE;
-
-	/* Only AES-256-XTS has been tested so far. */
-	cap = hba->crypto_cap_array[cfg->crypto_cap_idx];
-	if (cap.algorithm_id != UFS_CRYPTO_ALG_AES_XTS ||
-	    cap.key_size != UFS_CRYPTO_KEY_SIZE_256)
-		return -EOPNOTSUPP;
-
-	if (config_enable)
-		return qcom_ice_program_key(host->ice,
-					    QCOM_ICE_CRYPTO_ALG_AES_XTS,
-					    QCOM_ICE_CRYPTO_KEY_SIZE_256,
-					    cfg->crypto_key,
-					    cfg->data_unit_size, slot);
-	else
-		return qcom_ice_evict_key(host->ice, slot);
-}
-
 #else
-
-#define ufs_qcom_ice_program_key NULL
 
 static inline void ufs_qcom_ice_enable(struct ufs_qcom_host *host)
 {
@@ -2612,9 +2585,12 @@ static void ufs_qcom_advertise_quirks(struct ufs_hba *hba)
 	   (host->hw_ver.minor == 1 || host->hw_ver.minor == 0))
 		hba->quirks |= UFSHCD_QUIRK_BROKEN_LSDBS_CAP;
 
-#if IS_ENABLED(CONFIG_SCSI_UFS_CRYPTO_QTI)
+	/*
+	 * QC ICE keys are programmed through SCM calls, not the standard UFSHCI
+	 * crypto registers: the crypto profile comes from ufshcd-crypto-qti
+	 * (CONFIG_SCSI_UFS_CRYPTO_QTI); without it inline encryption stays off.
+	 */
 	hba->quirks |= UFSHCD_QUIRK_CUSTOM_CRYPTO_PROFILE;
-#endif
 }
 
 static void ufs_qcom_set_caps(struct ufs_hba *hba)
@@ -5560,7 +5536,6 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
 	.dbg_register_dump	= ufs_qcom_dump_dbg_regs,
 	.device_reset		= ufs_qcom_device_reset,
 	.config_scaling_param   = ufs_qcom_config_scaling_param,
-	.program_key		= ufs_qcom_ice_program_key,
 	.fixup_dev_quirks       = ufs_qcom_fixup_dev_quirks,
 	.mcq_config_resource	= ufs_qcom_mcq_config_resource,
 	.get_hba_mac		= ufs_qcom_get_hba_mac,
