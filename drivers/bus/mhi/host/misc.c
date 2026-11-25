@@ -221,7 +221,7 @@ static void mhi_reg_write_enqueue(struct mhi_private *mhi_priv,
 	 smp_wmb();
 }
 
-void mhi_write_reg_offload(struct mhi_controller *mhi_cntrl,
+static void mhi_write_reg_offload(struct mhi_controller *mhi_cntrl,
 		   void __iomem *base,
 		   u32 offset,
 		   u32 val)
@@ -241,7 +241,7 @@ void mhi_write_offload_wakedb(struct mhi_controller *mhi_cntrl, int db_val)
 			      lower_32_bits(db_val));
 }
 
-void mhi_reg_write_work(struct work_struct *w)
+static void mhi_reg_write_work(struct work_struct *w)
 {
 	struct mhi_private *mhi_priv = container_of(w,
 						struct mhi_private,
@@ -1228,7 +1228,7 @@ static int mhi_init_timesync(struct mhi_controller *mhi_cntrl,
 	return 0;
 }
 
-int mhi_init_host_notification(struct mhi_controller *mhi_cntrl,
+static int mhi_init_host_notification(struct mhi_controller *mhi_cntrl,
 							void __iomem *host_notify_db)
 {
 	struct device *dev = &mhi_cntrl->mhi_dev->dev;

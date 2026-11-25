@@ -839,6 +839,10 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
  */
 int mhi_prepare_for_transfer_autoqueue(struct mhi_device *mhi_dev);
 
+/* Start or stop the channels of a device that is set up for transfer */
+int mhi_start_transfer(struct mhi_device *mhi_dev);
+int mhi_stop_transfer(struct mhi_device *mhi_dev);
+
 /**
  * mhi_unprepare_from_transfer - Reset UL and DL channels for data transfer.
  *                               Issue the RESET channel command and let the
