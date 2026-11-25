@@ -13,7 +13,6 @@ def register_modules(registry):
         ],
         includes = [
             "drivers/power/supply/mca/include",
-            "drivers/scsi",
             "drivers/misc/hwid",
         ],
         deps = [

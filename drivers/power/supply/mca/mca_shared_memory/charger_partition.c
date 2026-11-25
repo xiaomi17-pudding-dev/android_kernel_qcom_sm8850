@@ -48,7 +48,6 @@
 #include "inc/charger_partition.h"
 #include <mca/shared_memory/charger_partition_class.h>
 #include <hwid.h>
-#include "drivers/scsi/sd.h"
 
 
 #ifndef MCA_LOG_TAG
@@ -838,29 +837,35 @@ static bool check_device_is_correct(void)
 	return true;
 }
 
+/* sd registers the disk of a SCSI device as a block class child of it */
+static int charger_partition_match_disk(struct device *dev, const void *data)
+{
+	return dev->class && !strcmp(dev->class->name, "block");
+}
+
 static bool get_charger_partition_info(void)
 {
-	struct scsi_disk *sdkp = NULL;
 	struct scsi_device *sdev = charger_partition->sdev;
+	struct gendisk *disk;
 	struct block_device *part;
+	struct device *disk_dev;
 	unsigned long part_number;
 
-	if (!sdev->sdev_gendev.driver_data) {
-		mca_log_err("scsi disk is null\n");
-		return false;
-	}
-
-	sdkp = (struct scsi_disk *)sdev->sdev_gendev.driver_data;
-	if (!sdkp->disk) {
+	disk_dev = device_find_child(&sdev->sdev_gendev, NULL,
+				     charger_partition_match_disk);
+	if (!disk_dev) {
 		mca_log_err("gendisk is null\n");
 		return false;
 	}
+	disk = dev_to_disk(disk_dev);
+	/* the disk lives as long as the SCSI device we hold */
+	put_device(disk_dev);
 
-	charger_partition->part_info_part_name = sdkp->disk->disk_name;
+	charger_partition->part_info_part_name = disk->disk_name;
 	mca_log_err("partion: %s, searching for charger partition\n",
 		    charger_partition->part_info_part_name);
 
-	xa_for_each_start(&sdkp->disk->part_tbl, part_number, part, 1) {
+	xa_for_each_start(&disk->part_tbl, part_number, part, 1) {
 		if (!part->bd_meta_info)
 			continue;
 		if (!strncmp(part->bd_meta_info->volname, "charger",
