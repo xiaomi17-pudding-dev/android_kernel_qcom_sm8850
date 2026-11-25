@@ -27,14 +27,20 @@ def define_extras(target, kbuild_config, flavor = None, alias = None):
 def get_build_config_fragments(target):
     return []
 
+# Device targets build the device trees of their SoC; the devices ship their
+# own (vendor) DTB and DTBO.
+_dt_target_map = {
+    "pudding": "canoe",
+}
+
 def get_dtb_list(target):
-    return _get_dtb_list(target)
+    return _get_dtb_list(_dt_target_map.get(target, target))
 
 def get_dtbo_list(target):
-    return _get_dtbo_list(target)
+    return _get_dtbo_list(_dt_target_map.get(target, target))
 
 def get_custom_dtbo_img_list(target):
-    return _get_custom_dtbo_img_list(target)
+    return _get_custom_dtbo_img_list(_dt_target_map.get(target, target))
 
 def get_dtstree(target):
     return "//vendor/qcom/sm8850-devicetrees:msm_dt"
