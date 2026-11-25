@@ -37,6 +37,7 @@
 #include <mca/common/mca_sysfs.h>
 #include <mca/common/mca_hwid.h>
 #include <mca/common/mca_charge_mievent.h>
+#include "inc/mca_connector_antiburn.h"
 #include <mca/common/mca_workqueue.h>
 #include <mca/platform/platform_buckchg_class.h>
 #include <mca/protocol/protocol_class.h>

@@ -665,7 +665,7 @@ static int sc96281_set_fod(struct sc96281 *sc, fod_params_t *fod_params)
 	return ret;
 }
 
-static int sc96281_rx_reneg(struct sc96281 *sc, int reneg_W)
+static int __maybe_unused sc96281_rx_reneg(struct sc96281 *sc, int reneg_W)
 {
 	int ret;
 	contract_t req;

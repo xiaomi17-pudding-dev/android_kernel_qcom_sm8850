@@ -2573,7 +2573,7 @@ static void strategy_fg_update_batt_dc(struct strategy_fg *fg)
 		fg->batt_dc = dc_master;
 }
 
-void strategy_fg_update_batt_info(struct strategy_fg *fg)
+static void strategy_fg_update_batt_info(struct strategy_fg *fg)
 {
 	strategy_fg_update_batt_dc(fg);
 	strategy_fg_update_cycle(fg);
@@ -3052,7 +3052,7 @@ static int strategy_fg_ops_get_cycle(void *data, int *cycle)
 	return 0;
 }
 
-int strategy_lossless_rechg_parse_dt(struct strategy_fg *fg)
+static int strategy_lossless_rechg_parse_dt(struct strategy_fg *fg)
 {
 	struct device_node *node = fg->dev->of_node;
 	int ret = 0;
@@ -3081,7 +3081,7 @@ int strategy_lossless_rechg_parse_dt(struct strategy_fg *fg)
 	return ret;
 }
 
-int strategy_full_design_parse_dt(struct strategy_fg *fg)
+static int strategy_full_design_parse_dt(struct strategy_fg *fg)
 {
 	struct device_node *node = fg->dev->of_node;
 	const struct mca_hwid *hwid = mca_get_hwid_info();
@@ -3694,7 +3694,7 @@ static int strategy_fg_ops_get_soh(void *data, int *soh)
 	return 0;
 }
 
-int strategy_fg_ops_is_init_ok(void *data)
+static int strategy_fg_ops_is_init_ok(void *data)
 {
 	struct strategy_fg *fg = (struct strategy_fg *)data;
 
@@ -3704,13 +3704,13 @@ int strategy_fg_ops_is_init_ok(void *data)
 	return fg->fg_init_flag;
 }
 
-int strategy_fg_ops_is_chip_ok(void *data)
+static int strategy_fg_ops_is_chip_ok(void *data)
 {
 	struct strategy_fg *fg = (struct strategy_fg *)data;
 
 	return fg->fg_init_flag && !fg->fg_error;
 }
-int strategy_fg_dual_ops_is_chip_ok(void *data, int index)
+static int strategy_fg_dual_ops_is_chip_ok(void *data, int index)
 {
 	struct strategy_fg *fg = (struct strategy_fg *)data;
 
@@ -3726,7 +3726,7 @@ int strategy_fg_dual_ops_is_chip_ok(void *data, int index)
 	return !fg->dual_error[FG_IC_MASTER];
 }
 
-int strategy_fg_ops_get_pack_vendor_id(void *data, int *vendor_id)
+static int strategy_fg_ops_get_pack_vendor_id(void *data, int *vendor_id)
 {
 	struct strategy_fg *fg = (struct strategy_fg *)data;
 

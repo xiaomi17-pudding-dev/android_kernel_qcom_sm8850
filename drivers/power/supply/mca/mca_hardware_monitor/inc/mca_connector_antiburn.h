@@ -67,4 +67,6 @@ struct connector_antiburn {
 	struct delayed_work monitor_work;
 };
 
+int connector_antiburn_is_triggered(void);
+
 #endif /* __CONNECTOR_ANTIBURN_H__ */
