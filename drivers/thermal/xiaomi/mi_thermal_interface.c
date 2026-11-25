@@ -1310,6 +1310,56 @@ out:
 	return 0;
 }
 
+/*
+ * struct thermal_zone_device is private to the thermal core and its device
+ * accessor is not in the GKI symbol lists. Take the thermal class from a
+ * cooling device, whose struct is public, registered only for this.
+ */
+static int mi_thermal_cdev_get_max_state(struct thermal_cooling_device *cdev,
+					 unsigned long *state)
+{
+	*state = 0;
+	return 0;
+}
+
+static int mi_thermal_cdev_get_cur_state(struct thermal_cooling_device *cdev,
+					 unsigned long *state)
+{
+	*state = 0;
+	return 0;
+}
+
+static int mi_thermal_cdev_set_cur_state(struct thermal_cooling_device *cdev,
+					 unsigned long state)
+{
+	return 0;
+}
+
+static const struct thermal_cooling_device_ops mi_thermal_cdev_ops = {
+	.get_max_state = mi_thermal_cdev_get_max_state,
+	.get_cur_state = mi_thermal_cdev_get_cur_state,
+	.set_cur_state = mi_thermal_cdev_set_cur_state,
+};
+
+static const struct class *mi_thermal_class(void)
+{
+	static const struct class *class;
+	struct thermal_cooling_device *cdev;
+
+	if (class)
+		return class;
+
+	cdev = thermal_cooling_device_register("mi_thermal_class", NULL,
+					       &mi_thermal_cdev_ops);
+	if (IS_ERR(cdev))
+		return NULL;
+
+	class = cdev->device.class;
+	thermal_cooling_device_unregister(cdev);
+
+	return class;
+}
+
 static void create_thermal_message_node(void)
 {
 	int ret = 0;
@@ -1323,8 +1373,8 @@ static void create_thermal_message_node(void)
 		return;
 	}
 
-	if (!mi_thermal_dev.class && tz->device.class) {
-		mi_thermal_dev.class = tz->device.class;
+	if (!mi_thermal_dev.class && mi_thermal_class()) {
+		mi_thermal_dev.class = mi_thermal_class();
 		mi_thermal_dev.dev = device_create(mi_thermal_dev.class, NULL,
 						   'H', NULL,
 						   "thermal_message");
@@ -1356,8 +1406,8 @@ static void create_mi_powersave_node(void)
 		return;
 	}
 
-	if (!mi_powersave_dev.class && tz->device.class) {
-		mi_powersave_dev.class = tz->device.class;
+	if (!mi_powersave_dev.class && mi_thermal_class()) {
+		mi_powersave_dev.class = mi_thermal_class();
 		mi_powersave_dev.dev = device_create(mi_powersave_dev.class, NULL,
 						     'H', NULL, "power_save");
 		if (!mi_powersave_dev.dev) {
