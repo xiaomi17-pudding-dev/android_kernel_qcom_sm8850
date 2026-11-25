@@ -1321,4 +1321,4 @@ int habmm_imp_hyp_map_check(void *imp_ctx, struct export_desc *exp)
 	return found;
 }
 
-MODULE_IMPORT_NS(DMA_BUF);
+MODULE_IMPORT_NS("DMA_BUF");
