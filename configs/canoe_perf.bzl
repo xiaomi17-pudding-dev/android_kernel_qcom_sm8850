@@ -115,7 +115,9 @@ canoe_perf_config = {
     "CONFIG_MEM_PROT": "m",
     "CONFIG_MEM_SHARE_QMI_SERVICE": "m",
     "CONFIG_MFD_I2C_PMIC": "m",
-    "CONFIG_MFD_QCOM_PM8008": "m",
+    # The upstream PM8008 drivers need symbols the android17-6.18 GKI does
+    # not export (devm_regmap_add_irq_chip_fwnode, linear_range_values_in_range)
+    "CONFIG_MFD_QCOM_PM8008": "n",
     "CONFIG_MFD_SPMI_PMIC": "m",
     "CONFIG_MHI_BUS": "m",
     "CONFIG_MHI_BUS_MISC": "y",
@@ -356,7 +358,8 @@ canoe_perf_config = {
     "CONFIG_REGULATOR_DEBUG_CONTROL": "m",
     "CONFIG_REGULATOR_PROXY_CONSUMER": "m",
     "CONFIG_REGULATOR_QCOM_AMOLED": "m",
-    "CONFIG_REGULATOR_QCOM_PM8008": "m",
+    # See CONFIG_MFD_QCOM_PM8008
+    "CONFIG_REGULATOR_QCOM_PM8008": "n",
     "CONFIG_REGULATOR_QPNP_LCDB": "m",
     "CONFIG_REGULATOR_QTI_FIXED_VOLTAGE": "m",
     "CONFIG_REGULATOR_QTI_OCP_NOTIFIER": "m",
