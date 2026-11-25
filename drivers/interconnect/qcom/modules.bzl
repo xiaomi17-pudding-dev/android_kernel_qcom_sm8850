@@ -37,6 +37,7 @@ def register_modules(registry):
         config = "CONFIG_INTERCONNECT_QCOM_DEBUG",
         srcs = [
             # do not sort
+            "drivers/interconnect/qcom/icc-debug.h",
             "drivers/interconnect/qcom/icc-debug.c",
         ],
     )
