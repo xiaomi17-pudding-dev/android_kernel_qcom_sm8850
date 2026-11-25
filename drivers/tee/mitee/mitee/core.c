@@ -65,7 +65,7 @@ struct optee *get_optee_drv_state(void)
  * that is, every time TEEC_InitializeContext is called.
  */
 
-int optee_open_common(struct tee_context *ctx, bool cap_memref_null)
+static int optee_open_common(struct tee_context *ctx, bool cap_memref_null)
 {
 	struct optee_context_data *ctxdata;
 	struct tee_device *teedev = ctx->teedev;
@@ -119,12 +119,12 @@ static void optee_release_helper(struct tee_context *ctx,
 	ctx->data = NULL;
 }
 
-void optee_release(struct tee_context *ctx)
+static void optee_release(struct tee_context *ctx)
 {
 	optee_release_helper(ctx, optee_close_session_helper);
 }
 
-void optee_release_supp(struct tee_context *ctx)
+static void optee_release_supp(struct tee_context *ctx)
 {
 	struct optee *optee = tee_get_drvdata(ctx->teedev);
 
@@ -814,7 +814,7 @@ static const struct tee_desc optee_supp_desc = {
 /*
  * 6. Initialization and Uninstallation of Mitee Driver
  */
-void optee_remove_common(struct optee *optee)
+static void optee_remove_common(struct optee *optee)
 {
 #if MITEE_FEATURE_FW_NP_ENABLE
 	/* Unregister OP-TEE specific client devices on TEE bus */

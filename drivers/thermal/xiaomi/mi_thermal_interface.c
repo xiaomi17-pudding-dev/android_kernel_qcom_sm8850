@@ -137,7 +137,7 @@ static int cpufreq_set_level(struct cpufreq_device *cdev, unsigned long state)
 				       cdev->freq_table[state].frequency);
 }
 
-void cpu_limits_set_level(unsigned int cpu, unsigned int max_freq)
+static void cpu_limits_set_level(unsigned int cpu, unsigned int max_freq)
 {
 	struct cpufreq_device *cpufreq_dev;
 	unsigned int level = 0;

@@ -321,7 +321,7 @@ err:
  * @returns a pointer to 'struct tee_shm'
  */
 
-struct tee_shm *tee_shm_register_kernel_buf(struct tee_context *ctx,
+static struct tee_shm * __maybe_unused tee_shm_register_kernel_buf(struct tee_context *ctx,
 					    void *addr, size_t length)
 {
 	u32 flags = TEE_SHM_DMA_BUF | TEE_SHM_KERNEL_MAPPED;
