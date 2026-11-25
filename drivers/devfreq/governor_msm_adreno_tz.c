@@ -62,7 +62,7 @@ static unsigned long acc_total, acc_relative_busy;
 /*
  * Returns GPU suspend time in millisecond.
  */
-u64 suspend_time_ms(void)
+static u64 suspend_time_ms(void)
 {
 	u64 suspend_sampling_time;
 	u64 time_diff = 0;
@@ -162,7 +162,7 @@ static const struct device_attribute *adreno_tz_attr_list[] = {
 		NULL
 };
 
-void compute_work_load(struct devfreq_dev_status *stats,
+static void compute_work_load(struct devfreq_dev_status *stats,
 		struct devfreq_msm_adreno_tz_data *priv,
 		struct devfreq *devfreq)
 {
@@ -569,13 +569,13 @@ int msm_adreno_tz_reinit(struct devfreq *devfreq)
 }
 EXPORT_SYMBOL_GPL(msm_adreno_tz_reinit);
 
-int msm_adreno_tz_init(void)
+static int msm_adreno_tz_init(void)
 {
 	return devfreq_add_governor(&msm_adreno_tz);
 }
 subsys_initcall(msm_adreno_tz_init);
 
-void msm_adreno_tz_exit(void)
+static void msm_adreno_tz_exit(void)
 {
 	int ret = devfreq_remove_governor(&msm_adreno_tz);
 
