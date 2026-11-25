@@ -6,6 +6,8 @@
 #ifndef _LEDS_QCOM_FLASH_H
 #define _LEDS_QCOM_FLASH_H
 
+struct led_classdev;
+
 #if IS_ENABLED(CONFIG_LEDS_QCOM_FLASH)
 int qcom_flash_led_get_max_avail_current(
 		struct led_classdev *led_cdev, int *max_current_ma);
