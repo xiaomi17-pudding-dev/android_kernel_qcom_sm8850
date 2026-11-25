@@ -26,7 +26,7 @@ def define_qcom_dtb_setup():
         name = "build.config.qcom.dtb",
         srcs = [
             ":dtb_build_config",
-            "//common:build.config.common",
+            "//common:build.config.constants",
         ],
     )
 
