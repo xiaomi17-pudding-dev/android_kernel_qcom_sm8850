@@ -69,6 +69,7 @@ int hdcp1_start(void *data, u32 *aksv_msb, u32 *aksv_lsb);
 int hdcp1_set_enc(void *data, bool enable);
 int hdcp1_ops_notify(void *data, void *topology, bool is_authenticated);
 void hdcp1_stop(void *data);
+void hdcp1_set_hdcp_key_verify_retries(void *ctx, u32 max_hdcp_key_verify_retries);
 
 void *hdcp2_init(u32 device_type);
 void hdcp2_deinit(void *ctx);
@@ -79,6 +80,7 @@ int hdcp2_open_stream(void *ctx, uint8_t vc_payload_id,
 		uint8_t stream_number, uint32_t *stream_id);
 int hdcp2_close_stream(void *ctx, uint32_t stream_id);
 int hdcp2_force_encryption(void *ctx, uint32_t enable);
+void hdcp2_set_hdcp_key_verify_retries(void *ctx, u32 max_hdcp_key_verify_retries);
 #else
 static inline void *hdcp1_init(void)
 {
@@ -147,6 +149,16 @@ static inline int hdcp2_close_stream(void *ctx, uint32_t stream_id)
 static inline int hdcp2_force_encryption(void *ctx, uint32_t enable)
 {
 	return 0;
+}
+
+static inline void hdcp1_set_hdcp_key_verify_retries(void *ctx,
+		u32 max_hdcp_key_verify_retries)
+{
+}
+
+static inline void hdcp2_set_hdcp_key_verify_retries(void *ctx,
+		u32 max_hdcp_key_verify_retries)
+{
 }
 #endif /* CONFIG_HDCP_QSEECOM */
 
