@@ -1067,7 +1067,7 @@ static int sc8541_register_irq(struct sc8541_device *sc)
 {
 	int ret;
 
-	ret = devm_gpio_request(sc->dev, sc->irq_gpio, sc->log_tag);
+	ret = devm_gpio_request_one(sc->dev, sc->irq_gpio, GPIOF_IN, sc->log_tag);
 	if (ret < 0) {
 		mca_log_info("%s failed to master request gpio\n", sc->log_tag);
 		return ret;

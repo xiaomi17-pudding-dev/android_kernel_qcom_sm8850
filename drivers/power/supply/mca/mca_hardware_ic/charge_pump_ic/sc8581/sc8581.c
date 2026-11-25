@@ -2388,7 +2388,8 @@ static int sc8581_register_irq(struct sc8581_device *bq)
 {
 	int ret = 0;
 
-	ret = devm_gpio_request(bq->dev, bq->irq_gpio, dev_name(bq->dev));
+	ret = devm_gpio_request_one(bq->dev, bq->irq_gpio, GPIOF_IN,
+				    dev_name(bq->dev));
 	if (ret < 0) {
 		mca_log_info(" %s failed to master request gpio\n",
 			     bq->log_tag);
@@ -2421,7 +2422,8 @@ static int sc8581_init_gpio(struct sc8581_device *bq)
 	if (bq->cp_role != SC8581_MASTER)
 		return ret;
 
-	ret = devm_gpio_request(bq->dev, bq->nlpm_gpio, dev_name(bq->dev));
+	ret = devm_gpio_request_one(bq->dev, bq->nlpm_gpio, GPIOF_OUT_INIT_HIGH,
+				    dev_name(bq->dev));
 	if (ret)
 		mca_log_info("%s unable to request nlpm gpio [%d]\n",
 			     bq->log_tag, bq->nlpm_gpio);

@@ -4276,8 +4276,9 @@ static int bq_parse_dt(struct bq_fg_chip *bq)
 		if (bq->co_gpio < 0) {
 			mca_log_err("failed to parse ctl_co_gpio\n");
 		} else {
-			if (devm_gpio_request(bq->dev, bq->co_gpio,
-					      dev_name(bq->dev)))
+			if (devm_gpio_request_one(bq->dev, bq->co_gpio,
+						  GPIOF_OUT_INIT_LOW,
+						  dev_name(bq->dev)))
 				mca_log_err("%s unable to request ctl_co gpio [%d]\n",
 					    dev_name(bq->dev), bq->co_gpio);
 			else if (gpiod_direction_output_raw(
