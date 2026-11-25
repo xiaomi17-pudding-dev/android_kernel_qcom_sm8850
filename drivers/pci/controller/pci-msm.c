@@ -4038,7 +4038,7 @@ static bool msm_pcie_check_ltssm_state(struct msm_pcie_dev_t *dev, u32 state)
 	return false;
 }
 
-void msm_pcie_clk_dump(struct msm_pcie_dev_t *pcie_dev)
+static void msm_pcie_clk_dump(struct msm_pcie_dev_t *pcie_dev)
 {
 	struct msm_pcie_clk_info_t *clk_info;
 	int i;
@@ -7929,7 +7929,7 @@ static void msm_aer_print_error_stats(struct pci_dev *dev,
 	msm_pci_dev_aer_stats_incr(dev, info);
 }
 
-void msm_aer_print_error(struct pci_dev *dev, struct msm_aer_err_info *info)
+static void msm_aer_print_error(struct pci_dev *dev, struct msm_aer_err_info *info)
 {
 	int layer, agent;
 	int id = ((dev->bus->number << 8) | dev->devfn);

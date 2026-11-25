@@ -4,6 +4,7 @@
  */
 
 #include <linux/bitfield.h>
+#include <linux/soc/qcom/leds-qcom-flash.h>
 #include <linux/bits.h>
 #include <linux/leds.h>
 #include <linux/led-class-flash.h>

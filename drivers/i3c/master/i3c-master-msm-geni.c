@@ -545,7 +545,7 @@ if (dev) \
 #include "i3c-qup-trace.h"
 
 /* FTRACE Logging */
-void i3c_trace_log(struct device *dev, const char *fmt, ...)
+static void i3c_trace_log(struct device *dev, const char *fmt, ...)
 {
 	struct va_format vaf = {
 		.fmt = fmt,
@@ -630,7 +630,7 @@ static void geni_i3c_ibi_test_bus_dump_regs(struct geni_i3c_dev *gi3c,
  *
  * Return:	None
  */
-void geni_i3c_se_dump_dbg_regs(struct geni_se *se, void __iomem *base,
+static void geni_i3c_se_dump_dbg_regs(struct geni_se *se, void __iomem *base,
 				void *ipc)
 {
 	u32 m_cmd0 = 0;
@@ -2085,7 +2085,7 @@ static int qcom_geni_i3c_conf(struct geni_i3c_dev *gi3c, enum i3c_bus_phase bus_
 	return 0;
 }
 
-int geni_i3c_send_setdasa(struct i3c_master_controller *master, u8 static_addr, u8 dyn_addr)
+static int geni_i3c_send_setdasa(struct i3c_master_controller *master, u8 static_addr, u8 dyn_addr)
 {
 	struct i3c_ccc_cmd_dest dest;
 	struct i3c_ccc_setda *setda;
