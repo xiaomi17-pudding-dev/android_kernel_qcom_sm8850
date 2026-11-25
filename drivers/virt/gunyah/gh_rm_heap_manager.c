@@ -14,6 +14,7 @@
 #include <linux/gunyah/gh_rm_drv.h>
 #include <soc/qcom/secure_buffer.h>
 #include <linux/sizes.h>
+#include <linux/gunyah/gh_rm_heap_manager.h>
 #include "gh_rm_drv_private.h"
 #include "mem-prot.h"
 
