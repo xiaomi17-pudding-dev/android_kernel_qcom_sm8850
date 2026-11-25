@@ -495,7 +495,7 @@ static inline void cancel_dwork_unvote_cpufreq(struct ufs_hba *hba)
 }
 
 static int ufs_qcom_get_pwr_dev_param(struct ufs_qcom_dev_params *qcom_param,
-				      struct ufs_pa_layer_attr *dev_max,
+				      const struct ufs_pa_layer_attr *dev_max,
 				      struct ufs_pa_layer_attr *agreed_pwr)
 {
 	int min_qcom_gear;
@@ -2277,9 +2277,24 @@ static void ufs_qcom_set_tx_hs_equalizer(struct ufs_hba *hba,
 	}
 }
 
+static int ufs_qcom_negotiate_pwr_mode(struct ufs_hba *hba,
+				       const struct ufs_pa_layer_attr *dev_max_params,
+				       struct ufs_pa_layer_attr *dev_req_params)
+{
+	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+	int ret;
+
+	ret = ufs_qcom_get_pwr_dev_param(&host->host_pwr_cap,
+					 dev_max_params, dev_req_params);
+	if (ret)
+		dev_err(hba->dev, "%s: failed to determine capabilities\n",
+				__func__);
+
+	return ret;
+}
+
 static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
 				enum ufs_notify_change_status status,
-				struct ufs_pa_layer_attr *dev_max_params,
 				struct ufs_pa_layer_attr *dev_req_params)
 {
 	u32 val;
@@ -2295,14 +2310,6 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
 
 	switch (status) {
 	case PRE_CHANGE:
-		ret = ufs_qcom_get_pwr_dev_param(&host->host_pwr_cap,
-						 dev_max_params, dev_req_params);
-		if (ret) {
-			dev_err(hba->dev, "%s: failed to determine capabilities\n",
-					__func__);
-			goto out;
-		}
-
 		/* enable the device ref clock before changing to HS mode */
 		if (!ufshcd_is_hs_mode(&hba->pwr_info) &&
 			ufshcd_is_hs_mode(dev_req_params))
@@ -5544,6 +5551,7 @@ static const struct ufs_hba_variant_ops ufs_hba_qcom_vops = {
 	.setup_clocks           = ufs_qcom_setup_clocks,
 	.hce_enable_notify      = ufs_qcom_hce_enable_notify,
 	.link_startup_notify    = ufs_qcom_link_startup_notify,
+	.negotiate_pwr_mode	= ufs_qcom_negotiate_pwr_mode,
 	.pwr_change_notify	= ufs_qcom_pwr_change_notify,
 	.hibern8_notify		= ufs_qcom_hibern8_notify,
 	.apply_dev_quirks	= ufs_qcom_apply_dev_quirks,
