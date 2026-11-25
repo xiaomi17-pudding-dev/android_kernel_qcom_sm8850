@@ -11,7 +11,7 @@
 #if IS_ENABLED(CONFIG_MMC_CRYPTO_QTI)
 int cqhci_qti_crypto_init(struct cqhci_host *cq_host);
 #else
-int cqhci_qti_crypto_init(struct cqhci_host *cq_host)
+static inline int cqhci_qti_crypto_init(struct cqhci_host *cq_host)
 {
 	return 0;
 }
