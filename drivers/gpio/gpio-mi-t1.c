@@ -161,7 +161,7 @@ static int mi_t1_modem_notify(struct notifier_block *nb, unsigned long action, v
 	return NOTIFY_OK;
 }
 
-int mi_t1_modem_config(struct mi_t1_gpio_data *mi_t1_data)
+static int mi_t1_modem_config(struct mi_t1_gpio_data *mi_t1_data)
 {
 	void *notifier;
 
@@ -178,7 +178,7 @@ int mi_t1_modem_config(struct mi_t1_gpio_data *mi_t1_data)
 	return 0;
 }
 
-void mi_t1_modem_deconfig(struct mi_t1_gpio_data *mi_t1_data)
+static void mi_t1_modem_deconfig(struct mi_t1_gpio_data *mi_t1_data)
 {
 	struct device *dev = mi_t1_data->dev;
 	int ret;
@@ -302,7 +302,10 @@ static int gpio_mi_t1_reuqest_gpio(struct platform_device *pdev,
     }
     mi_t1_data->data[idx].gpio_offset_num = gpio_num-gpio_offset;
 
-	ret = devm_gpio_request(dev, gpio_num, gpio_name);
+	ret = devm_gpio_request_one(dev, gpio_num,
+				    gpio_defalut_value[idx] ? GPIOF_OUT_INIT_HIGH :
+							      GPIOF_OUT_INIT_LOW,
+				    gpio_name);
 	if (ret) {
 		dev_err(dev, "Request gpio failed %s, error: %d.\n",  gpio_name, gpio_num);
 		return ret;
@@ -597,7 +600,7 @@ static int set_clk(struct device *dev, int clk_value) {
     return ret;
 }
 
-ssize_t t1_gpio_write(struct file *file,const char __user *buffer,size_t count,loff_t *ops)
+static ssize_t t1_gpio_write(struct file *file,const char __user *buffer,size_t count,loff_t *ops)
 {
 	char config[MI_T1_GPIO_COUN_MAX+1];
 	char clk_config[256] = {0};

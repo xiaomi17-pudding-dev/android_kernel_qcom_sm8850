@@ -84,10 +84,6 @@
 #define DWC3_GUCTL3_USB20_RETRY_DISABLE	BIT(16)
 #define DWC3_GUSB3PIPECTL_DISRXDETU3	BIT(22)
 
-#define DWC3_LLUCTL	0xd024
-/* Force Gen1 speed on Gen2 link */
-#define DWC3_LLUCTL_FORCE_GEN1	BIT(10)
-
 #define DWC31_LINK_GDBGLTSSM	0xd050
 #define DWC3_GDBGLTSSM_LINKSTATE_MASK	(0xF << 22)
 
@@ -1183,7 +1179,7 @@ static int find_matching_dbm_ep(struct dwc3_msm *mdwc, u8 usb_ep)
 	return -ENODEV; /* Not found */
 }
 
-int usb_send_headset_msg(struct usb_device *udev)
+static int usb_send_headset_msg(struct usb_device *udev)
 {
 
 	int i;
@@ -3833,7 +3829,7 @@ static void dwc3_force_gen1(struct dwc3_msm *mdwc)
 	struct dwc3 *dwc = platform_get_drvdata(mdwc->dwc3);
 
 	if (mdwc->force_gen1 && DWC3_IP_IS(DWC31))
-		dwc3_msm_write_reg_field(mdwc->base, DWC3_LLUCTL, DWC3_LLUCTL_FORCE_GEN1, 1);
+		dwc3_msm_write_reg_field(mdwc->base, DWC3_LLUCTL(0), DWC3_LLUCTL_FORCE_GEN1, 1);
 }
 
 static int dwc3_msm_power_collapse_por(struct dwc3_msm *mdwc)
