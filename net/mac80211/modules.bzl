@@ -44,6 +44,7 @@ def register_modules(registry):
             "net/mac80211/michael.c",
             "net/mac80211/michael.h",
             "net/mac80211/mlme.c",
+            "net/mac80211/nan.c",
             "net/mac80211/ocb.c",
             "net/mac80211/offchannel.c",
             "net/mac80211/parse.c",
