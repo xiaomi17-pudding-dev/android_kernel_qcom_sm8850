@@ -5,6 +5,7 @@
  * Copyright (c) 2025, Qualcomm Innovation Center, Inc. All rights reserved.
  */
 
+#include <linux/input/mi_pwrkey.h>
 #include <linux/delay.h>
 #include <linux/errno.h>
 #include <linux/input.h>
@@ -159,17 +160,16 @@ static int pm8941_reboot_notify(struct notifier_block *nb,
 	return NOTIFY_DONE;
 }
 
-typedef int (*mi_display_pwrkey_callback)(int);
-mi_display_pwrkey_callback mi_display_pwrkey_cb = NULL;
+static mi_display_pwrkey_callback mi_display_pwrkey_cb;
 void mi_display_pwrkey_callback_set(mi_display_pwrkey_callback cb)
 {
 	mi_display_pwrkey_cb = cb;
-	printk(KERN_INFO "%s: func %pF is set.\n", __func__, cb);
+	printk(KERN_INFO "%s: func %ps is set.\n", __func__, cb);
 	return;
 }
 EXPORT_SYMBOL(mi_display_pwrkey_callback_set);
 
-void show_state_filter_single(unsigned long state_filter)
+static void show_state_filter_single(unsigned long state_filter)
 {
 	struct task_struct *g, *p;
 
