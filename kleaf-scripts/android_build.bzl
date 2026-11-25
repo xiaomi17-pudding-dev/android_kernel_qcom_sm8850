@@ -192,11 +192,12 @@ def define_single_android_build(
         kernel_modules_install = ":{}_modules_install".format(stem),
         kernel_build = "{}_dtb_build".format(stem),
         base_kernel_images = "{}_images".format(base_kernel),
-        dtbo_srcs = [":{}_dtb_build/{}".format(stem, dtbo) for dtbo in dtbo_list] if dtbo_list else None,
         build_vendor_boot = True,
         build_vendor_kernel_boot = False,
         build_initramfs = True,
-        build_dtbo = True,
+        # dtbo.img is built below: kernel_images passes kernel_build to
+        # dtbo_image, which no longer has that attribute.
+        build_dtbo = False,
         build_vendor_dlkm = True,
         dedup_dlkm_modules = True,  # removes system_dlkm modules from vendor_dlkm
         modules_list = "modules-lists/modules.list.msm.{}".format(module_lists_name),
@@ -210,6 +211,12 @@ def define_single_android_build(
             "modules-lists/modules.systemdlkm_blocklist.msm.{}".format(module_lists_name),
         ],
     )
+
+    if dtbo_list:
+        dtbo(
+            name = "{}_images_dtbo".format(stem),
+            srcs = [":{}_dtb_build/{}".format(stem, dtbo) for dtbo in dtbo_list],
+        )
 
     avb_sign_boot_image(
         name = "{}_avb_sign_boot_image".format(stem),
@@ -322,7 +329,6 @@ def define_single_android_build(
             srcs = [":{}_dtb_build/{}".format(stem, dtbo) for dtbo in dtbo_img["src"]] if dtbo_img["src"] else None,
             out = "{}/{}_dtbo.img".format(stem, dtbo_img["name"]),
             config_file = dtbo_img["config_file"],
-            kernel_build = "{}_dtb_build".format(stem),
             tool = "mkdtboimg",
         )
 
@@ -365,7 +371,7 @@ def define_single_android_build(
     ] + gki_system_dlkm_images + [
         ":{}_{}_dtbo_image".format(stem, dtbo_img["name"])
         for dtbo_img in custom_dtbo_img_list
-    ]
+    ] + ([":{}_images_dtbo".format(stem)] if dtbo_list else [])
 
     # pkg_files rejects two sources landing on the same file in the flat dist
     # dir, which copy_to_dist_dir used to allow. Drop the GKI copy of every

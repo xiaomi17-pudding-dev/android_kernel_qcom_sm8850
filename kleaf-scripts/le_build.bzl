@@ -4,6 +4,7 @@ load("//build/kernel/kleaf:hermetic_tools.bzl", "hermetic_genrule")
 load(
     "//build/kernel/kleaf:kernel.bzl",
     "ddk_headers",
+    "dtbo",
     "kernel_build_config",
     "kernel_images",
     "merged_kernel_uapi_headers",
@@ -108,10 +109,11 @@ def define_single_le_build(
         kernel_modules_install = ":{}_modules_install".format(stem),
         kernel_build = "{}_dtb_build".format(stem),
         base_kernel_images = None,
-        dtbo_srcs = [":{}_dtb_build/{}".format(stem, dtbo) for dtbo in dtbo_list] if dtbo_list else None,
         build_boot = True,
         build_initramfs = True,
-        build_dtbo = True if dtbo_list else False,
+        # dtbo.img is built below: kernel_images passes kernel_build to
+        # dtbo_image, which no longer has that attribute.
+        build_dtbo = False,
         modules_list = "modules-lists/modules.list.msm.{}".format(name),
         vendor_ramdisk_binaries = get_vendor_ramdisk_binaries(stem, flavor = "le"),
         boot_image_outs = ["boot.img"],
@@ -119,6 +121,12 @@ def define_single_le_build(
             "modules-lists/modules.list.msm.{}".format(name),
         ],
     )
+
+    if dtbo_list:
+        dtbo(
+            name = "{}_images_dtbo".format(stem),
+            srcs = [":{}_dtb_build/{}".format(stem, dtbo) for dtbo in dtbo_list],
+        )
 
     hermetic_genrule(
         name = "{}_merge_msm_uapi_headers".format(stem),
@@ -177,7 +185,7 @@ def define_single_le_build(
     ] + [
         ":{}/{}".format(stem, module)
         for module in modules
-    ]
+    ] + ([":{}_images_dtbo".format(stem)] if dtbo_list else [])
 
     if build_img_opts != None:
         board_cmdline_extras = " ".join(build_img_opts.board_kernel_cmdline_extras)
