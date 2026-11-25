@@ -217,6 +217,7 @@ bool mmrm_client_check_scaling_supported(enum mmrm_client_type client_type,
  * Returns pointer to mmrm_client for success or NULL during failure
  */
 struct mmrm_client *mmrm_client_register(struct mmrm_client_desc *desc);
+int mmrm_client_get_clk_count(void);
 
 /**
  * mmrm_client_deregister - de-register a previously registered mmrm client
@@ -284,6 +285,11 @@ static inline struct mmrm_client *mmrm_client_register(
 	struct mmrm_client_desc *desc)
 {
 	return NULL;
+}
+
+static inline int mmrm_client_get_clk_count(void)
+{
+	return 0;
 }
 
 static inline int mmrm_client_deregister(struct mmrm_client *client)
