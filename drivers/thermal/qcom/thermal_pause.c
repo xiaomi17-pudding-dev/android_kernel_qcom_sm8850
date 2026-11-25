@@ -14,6 +14,7 @@
 #include <linux/suspend.h>
 #include <linux/cpumask.h>
 #include <linux/sched/walt.h>
+#include <linux/thermal_pause.h>
 
 enum thermal_pause_levels {
 	THERMAL_NO_CPU_PAUSE,
