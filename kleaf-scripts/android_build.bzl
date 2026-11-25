@@ -375,11 +375,10 @@ def define_single_android_build(
     # ":msm_kernel_build" is a label_flag and has no per module targets to
     # exclude, so refer to the kernel build it points at.
     gki_kernel_build = "//common:kernel_aarch64" if base_kernel == ":msm_kernel_build" else base_kernel
-    gki_module_excludes = [
-        "{}/{}".format(gki_kernel_build, gki_module)
-        for gki_module in get_gki_modules_list("arm64")
-        if gki_module.split("/")[-1] in msm_module_kos
-    ]
+    gki_module_excludes = get_gki_modules_list(
+        "arm64",
+        map_each = lambda gki_module: "{}/{}".format(gki_kernel_build, gki_module) if gki_module.split("/")[-1] in msm_module_kos else None,
+    )
 
     vendor_dlkm_module_unprotected_list = get_unprotected_vendor_modules_list(stem)
     vendor_unprotected_dlkm = " ".join(vendor_dlkm_module_unprotected_list)

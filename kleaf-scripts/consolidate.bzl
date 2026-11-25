@@ -106,10 +106,10 @@ def define_consolidated_kernel(
     # All GKI modules
     native.filegroup(
         name = name + "_modules",
-        srcs = [
-            "{}/{}".format(name, module)
-            for module in (get_gki_modules_list("arm64") or [])
-        ],
+        srcs = get_gki_modules_list(
+            "arm64",
+            map_each = lambda module: "{}/{}".format(name, module),
+        ),
     )
 
     # The purpose of this target is to allow device kernel build to include reasonable
