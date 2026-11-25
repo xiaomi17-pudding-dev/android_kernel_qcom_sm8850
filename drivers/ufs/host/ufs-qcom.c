@@ -5239,8 +5239,7 @@ static struct ufs_dev_quirk ufs_qcom_dev_fixups[] = {
 	{ .wmanufacturerid = UFS_VENDOR_SAMSUNG,
 	  .model = UFS_ANY_MODEL,
 	  .quirk = UFS_DEVICE_QUIRK_PA_HIBER8TIME |
-			UFS_DEVICE_QUIRK_PA_TX_HSG1_SYNC_LENGTH |
-			UFS_DEVICE_QUIRK_DELAY_AFTER_LPM },
+			UFS_DEVICE_QUIRK_PA_TX_HSG1_SYNC_LENGTH },
 	{ .wmanufacturerid = UFS_VENDOR_SAMSUNG,
 	  .model = "KLUEG4RHHD-B0G1",
 	  .quirk = UFS_DEVICE_QUIRK_PA_TX_DEEMPHASIS_TUNING },
@@ -5271,15 +5270,22 @@ static struct ufs_dev_quirk ufs_qcom_dev_fixups[] = {
 	{ .wmanufacturerid = UFS_VENDOR_WDC,
 	  .model = UFS_ANY_MODEL,
 	  .quirk = UFS_DEVICE_QUIRK_HOST_PA_TACTIVATE },
-	{ .wmanufacturerid = UFS_VENDOR_TOSHIBA,
-	  .model = UFS_ANY_MODEL,
-	  .quirk = UFS_DEVICE_QUIRK_DELAY_AFTER_LPM },
 	{}
 };
 
 static void ufs_qcom_fixup_dev_quirks(struct ufs_hba *hba)
 {
+	u16 vendor = hba->dev_info.wmanufacturerid;
+
 	ufshcd_fixup_dev_quirks(hba, ufs_qcom_dev_fixups);
+
+	/*
+	 * android17-6.18 has no UFS_DEVICE_QUIRK_DELAY_AFTER_LPM; the core waits
+	 * vcc_off_delay_us (2 ms by default) after turning VCC off. Keep the 5 ms
+	 * the quirk gave Samsung and Toshiba devices.
+	 */
+	if (vendor == UFS_VENDOR_SAMSUNG || vendor == UFS_VENDOR_TOSHIBA)
+		hba->vcc_off_delay_us = 5000;
 }
 
 /* Resources */
