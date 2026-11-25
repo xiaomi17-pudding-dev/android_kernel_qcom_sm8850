@@ -3124,11 +3124,17 @@ static int sdhci_msm_fmr_power_state(struct device *dev, bool power_on)
 
 #ifdef CONFIG_MMC_CRYPTO
 
+static const struct blk_crypto_ll_ops sdhci_msm_crypto_ops; /* forward decl */
+
 static int sdhci_msm_ice_init(struct sdhci_msm_host *msm_host,
 			      struct cqhci_host *cq_host)
 {
 	struct mmc_host *mmc = msm_host->mmc;
+	struct blk_crypto_profile *profile = &mmc->crypto_profile;
 	struct device *dev = mmc_dev(mmc);
+	union cqhci_crypto_capabilities caps;
+	union cqhci_crypto_cap_entry cap;
+	int err, i;
 #if IS_ENABLED(CONFIG_QTI_HW_KEY_MANAGER)
 	struct resource *ice_hwkm_res;
 #endif
@@ -3163,6 +3169,28 @@ static int sdhci_msm_ice_init(struct sdhci_msm_host *msm_host,
 		return PTR_ERR_OR_ZERO(ice);
 
 	msm_host->ice = ice;
+
+	/* The number of keyslots supported is (CFGC+1) */
+	caps.reg_val = cpu_to_le32(cqhci_readl(cq_host, CQHCI_CCAP));
+	err = devm_blk_crypto_profile_init(dev, profile, caps.config_count + 1);
+	if (err)
+		return err;
+
+	profile->ll_ops = sdhci_msm_crypto_ops;
+	profile->max_dun_bytes_supported = 4;
+	profile->key_types_supported = BLK_CRYPTO_KEY_TYPE_RAW;
+	profile->dev = dev;
+
+	/* Only AES-256-XTS is supported, with the data unit sizes of the hardware */
+	for (i = 0; i < caps.num_crypto_cap; i++) {
+		cap.reg_val = cpu_to_le32(cqhci_readl(cq_host, CQHCI_CRYPTOCAP +
+						      i * sizeof(__le32)));
+		if (cap.algorithm_id == CQHCI_CRYPTO_ALG_AES_XTS &&
+		    cap.key_size == CQHCI_CRYPTO_KEY_SIZE_256)
+			profile->modes_supported[BLK_ENCRYPTION_MODE_AES_256_XTS] |=
+				cap.sdus_mask * 512;
+	}
+
 	mmc->caps2 |= MMC_CAP2_CRYPTO;
 
 	return 0;
@@ -3209,36 +3237,55 @@ static __maybe_unused int sdhci_msm_ice_suspend(struct sdhci_msm_host *msm_host)
 	return 0;
 }
 
-/*
- * Program a key into a QC ICE keyslot, or evict a keyslot.  QC ICE requires
- * vendor-specific SCM calls for this; it doesn't support the standard way.
- */
-static int sdhci_msm_program_key(struct cqhci_host *cq_host,
-				 const union cqhci_crypto_cfg_entry *cfg,
-				 int slot)
+static inline struct sdhci_msm_host *
+sdhci_msm_host_from_crypto_profile(struct blk_crypto_profile *profile)
 {
-	struct sdhci_host *host = mmc_priv(cq_host->mmc);
+	struct mmc_host *mmc = mmc_from_crypto_profile(profile);
+	struct sdhci_host *host = mmc_priv(mmc);
 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-	struct sdhci_msm_host *msm_host = sdhci_pltfm_priv(pltfm_host);
-	union cqhci_crypto_cap_entry cap;
 
-	/* Only AES-256-XTS has been tested so far. */
-	cap = cq_host->crypto_cap_array[cfg->crypto_cap_idx];
-	if (cap.algorithm_id != CQHCI_CRYPTO_ALG_AES_XTS ||
-		cap.key_size != CQHCI_CRYPTO_KEY_SIZE_256)
-		return -EINVAL;
-
-	if (cfg->config_enable & CQHCI_CRYPTO_CONFIGURATION_ENABLE)
-		return qcom_ice_program_key(msm_host->ice,
-					    QCOM_ICE_CRYPTO_ALG_AES_XTS,
-					    QCOM_ICE_CRYPTO_KEY_SIZE_256,
-					    cfg->crypto_key,
-					    cfg->data_unit_size, slot);
-	else
-		return qcom_ice_evict_key(msm_host->ice, slot);
+	return sdhci_pltfm_priv(pltfm_host);
 }
 
-void sdhci_msm_ice_disable(struct sdhci_msm_host *msm_host)
+/*
+ * Program a key into a QC ICE keyslot.  QC ICE requires vendor-specific SCM
+ * calls for this; it doesn't support the standard way. The profile only
+ * offers AES-256-XTS; the data unit size is passed in 512 byte units, as
+ * the CQHCI crypto configuration did.
+ */
+static int sdhci_msm_ice_keyslot_program(struct blk_crypto_profile *profile,
+					 const struct blk_crypto_key *key,
+					 unsigned int slot)
+{
+	struct sdhci_msm_host *msm_host =
+		sdhci_msm_host_from_crypto_profile(profile);
+
+	if (key->crypto_cfg.crypto_mode != BLK_ENCRYPTION_MODE_AES_256_XTS)
+		return -EOPNOTSUPP;
+
+	return qcom_ice_program_key(msm_host->ice,
+				    QCOM_ICE_CRYPTO_ALG_AES_XTS,
+				    QCOM_ICE_CRYPTO_KEY_SIZE_256,
+				    key->bytes,
+				    key->crypto_cfg.data_unit_size / 512, slot);
+}
+
+static int sdhci_msm_ice_keyslot_evict(struct blk_crypto_profile *profile,
+				       const struct blk_crypto_key *key,
+				       unsigned int slot)
+{
+	struct sdhci_msm_host *msm_host =
+		sdhci_msm_host_from_crypto_profile(profile);
+
+	return qcom_ice_evict_key(msm_host->ice, slot);
+}
+
+static const struct blk_crypto_ll_ops sdhci_msm_crypto_ops = {
+	.keyslot_program	= sdhci_msm_ice_keyslot_program,
+	.keyslot_evict		= sdhci_msm_ice_keyslot_evict,
+};
+
+static void __maybe_unused sdhci_msm_ice_disable(struct sdhci_msm_host *msm_host)
 {
 	if (!(msm_host->mmc->caps2 & MMC_CAP2_CRYPTO))
 		return;
@@ -3267,7 +3314,7 @@ sdhci_msm_ice_suspend(struct sdhci_msm_host *msm_host)
 	return 0;
 }
 
-void sdhci_msm_ice_disable(struct sdhci_msm_host *msm_host)
+static void __maybe_unused sdhci_msm_ice_disable(struct sdhci_msm_host *msm_host)
 {
 }
 #endif /* !CONFIG_MMC_CRYPTO */
@@ -3373,7 +3420,7 @@ static const struct cqhci_host_ops sdhci_msm_cqhci_ops = {
 	.disable	= sdhci_msm_cqe_disable,
 	.enhanced_strobe_mask = sdhci_msm_enhanced_strobe_mask,
 #ifdef CONFIG_MMC_CRYPTO
-	.program_key	= sdhci_msm_program_key,
+	.uses_custom_crypto_profile = true,
 #endif
 };
 
@@ -5544,7 +5591,6 @@ bus_clk_deinit:
 	if (!IS_ERR(msm_host->bus_clk))
 		clk_disable_unprepare(msm_host->bus_clk);
 pltfm_free:
-	sdhci_pltfm_free(pdev);
 	return ret;
 }
 
@@ -5610,7 +5656,6 @@ skip_removing_qos:
 		sdhci_msm_bus_get_and_set_vote(host, 0);
 		sdhci_msm_bus_unregister(&pdev->dev, msm_host);
 	}
-	sdhci_pltfm_free(pdev);
 }
 
 void sdhci_msm_toggle_dat1_gpio(struct sdio_func *func)
