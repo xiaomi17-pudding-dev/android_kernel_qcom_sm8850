@@ -140,7 +140,7 @@ static struct si_object_operations mem_ops = {
 };
 
 #if IS_ENABLED(CONFIG_QCOM_SI_CORE_MEM_FFA)
-int op_supported(unsigned long op)
+static int op_supported(unsigned long op)
 {
 	switch (op) {
 	case OBJECT_OP_MAP_REGION_SHM:
@@ -246,7 +246,7 @@ static void deregister_tz_shm(struct mem_object *mo)
 
 #else /* CONFIG_QCOM_SI_CORE_MEM_FFA */
 
-int op_supported(unsigned long op)
+static int op_supported(unsigned long op)
 {
 	switch (op) {
 	case OBJECT_OP_MAP_REGION_SHM:

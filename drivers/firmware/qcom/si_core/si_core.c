@@ -1262,8 +1262,6 @@ static ssize_t po_show(struct kobject *kobj, struct kobj_attribute *attr, char *
 	return len;
 }
 
-/* Defined in si_core_async.c. */
-ssize_t release_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf);
 
 static struct kobj_attribute ot = __ATTR_RO(ot);
 static struct kobj_attribute po = __ATTR_RO(po);

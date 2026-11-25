@@ -289,4 +289,12 @@ static inline void err_to_qtee_err(struct qtee_callback *cb_msg, int err)
 	}
 }
 
+struct kobject;
+struct kobj_attribute;
+
+/* si_core.c */
+struct si_object *erase_si_object(u32 idx);
+/* si_core_async.c or si_core_wq.c, whichever is built */
+ssize_t release_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf);
+
 #endif /* __SI_CORE_H__ */

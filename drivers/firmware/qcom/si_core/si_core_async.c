@@ -11,7 +11,6 @@
 
 /* Processing of the async messges happens without any ordering. */
 
-struct si_object *erase_si_object(u32 idx);
 u32 global_version;
 
 struct async_msg_info {
@@ -314,7 +313,7 @@ static void call_prepare(struct si_object_invoke_ctx *oic,
 	}
 }
 
-void prepare_objects(struct si_object_invoke_ctx *oic, struct si_buffer async_buffer)
+static void prepare_objects(struct si_object_invoke_ctx *oic, struct si_buffer async_buffer)
 {
 	int i;
 

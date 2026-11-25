@@ -6,6 +6,7 @@
 #include <linux/kthread.h>
 
 #include "si_core.h"
+#include "si_core_adci.h"
 
 static struct task_struct *adci_task;
 
