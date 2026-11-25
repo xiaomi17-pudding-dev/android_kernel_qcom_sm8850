@@ -46,7 +46,7 @@ static void bitmap_find_best_next_zero_area_off(void *data,
 						unsigned long mask,
 						unsigned long offset,
 						unsigned long *bitmap_no,
-						bool best_fit)
+						unsigned long best_fit)
 {
 	if (!best_fit || !IS_ENABLED(CONFIG_CMA_BEST_FIT))
 		return;
