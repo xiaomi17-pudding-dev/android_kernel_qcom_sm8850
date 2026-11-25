@@ -484,6 +484,8 @@ int gh_rm_remove_heap_memory(u32 heap_handle,
 int gh_rm_mem_notify(gh_memparcel_handle_t handle, u8 flags,
 		     gh_label_t mem_info_tag,
 		     struct gh_notify_vmid_desc *vmid_desc);
+int gh_rm_mem_append(gh_memparcel_handle_t handle, u8 flags,
+		     struct gh_sgl_entry *sgl_entries, u32 n_sgl_entries);
 int gh_rm_ipa_reserve(u64 size, u64 align, struct range limits, u32 generic_constraints,
 		      u32 platform_constraints, u64 *ipa);
 
@@ -777,6 +779,13 @@ static inline int gh_rm_remove_heap_memory(u32 heap_handle,
 static inline int gh_rm_mem_notify(gh_memparcel_handle_t handle, u8 flags,
 				   gh_label_t mem_info_tag,
 				   struct gh_notify_vmid_desc *vmid_desc)
+{
+	return -EINVAL;
+}
+
+static inline int gh_rm_mem_append(gh_memparcel_handle_t handle, u8 flags,
+				   struct gh_sgl_entry *sgl_entries,
+				   u32 n_sgl_entries)
 {
 	return -EINVAL;
 }
