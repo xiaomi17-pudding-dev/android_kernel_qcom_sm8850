@@ -346,7 +346,8 @@ canoe_perf_config = {
     "CONFIG_QTI_SYS_PM_VX": "m",
     "CONFIG_QTI_THERMALZONE_CONFIG_DEBUG": "m",
     "CONFIG_QTI_THERMAL_LMH_STATS": "m",
-    "CONFIG_QTI_THERMAL_VENDOR_HOOK": "m",
+    # android17-6.18 has no android_vh_thermal_pm_notify_suspend to attach to
+    "CONFIG_QTI_THERMAL_VENDOR_HOOK": "n",
     "CONFIG_QTI_USERSPACE_CDEV": "m",
     "CONFIG_QTVM_WITH_AVF": "y",
     "CONFIG_R8712U": "n",
