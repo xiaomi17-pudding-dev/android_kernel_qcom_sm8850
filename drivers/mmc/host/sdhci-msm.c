@@ -5781,7 +5781,7 @@ static const struct dev_pm_ops sdhci_msm_pm_ops = {
 
 static struct platform_driver sdhci_msm_driver = {
 	.probe = sdhci_msm_probe,
-	.remove_new = sdhci_msm_remove,
+	.remove = sdhci_msm_remove,
 	.driver = {
 		   .name = "sdhci_msm",
 		   .probe_type = PROBE_PREFER_ASYNCHRONOUS,
