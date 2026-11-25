@@ -10,6 +10,8 @@
 #define _TRACE_UFS_QCOM_H
 
 #include <linux/tracepoint.h>
+/* enum ufs_trace_str_t moved out of ufs/ufs.h into the core in 6.18 */
+#include "drivers/ufs/core/ufs_trace_types.h"
 
 #define str_opcode(opcode)						\
 	__print_symbolic(opcode,					\
