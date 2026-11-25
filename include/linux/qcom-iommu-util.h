@@ -111,7 +111,6 @@ int qcom_iommu_get_fast_iova_range(struct device *dev,
 
 /* Remove once this function is exported by upstream kernel */
 void qcom_iommu_get_resv_regions(struct device *dev, struct list_head *list);
-void qcom_iommu_generate_resv_regions(struct device *dev, struct list_head *head);
 
 phys_addr_t qcom_iommu_iova_to_phys_hard(struct iommu_domain *domain,
 				    struct qcom_iommu_atos_txn *txn);
@@ -134,6 +133,9 @@ int qcom_iommu_set_fault_model(struct iommu_domain *domain, int fault_model);
 
 int qcom_iommu_set_fault_handler(struct iommu_domain *domain,
 				 iommu_fault_handler_t handler, void *token);
+
+int qcom_iommu_set_fault_handler_irq(struct iommu_domain *domain,
+				     fault_handler_irq_t handler_irq, void *token);
 
 int qcom_iommu_enable_s1_translation(struct iommu_domain *domain);
 

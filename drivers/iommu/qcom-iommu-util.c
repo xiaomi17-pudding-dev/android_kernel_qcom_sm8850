@@ -442,6 +442,37 @@ int qcom_iommu_set_fault_model(struct iommu_domain *domain, int fault_model)
 }
 EXPORT_SYMBOL(qcom_iommu_set_fault_model);
 
+/*
+ * In 6.18 the core fault handler shares a union with the DMA cookie, so
+ * iommu_set_fault_handler() refuses DMA domains. Use these for them: the SMMU
+ * driver keeps the handler and calls it on a context fault.
+ */
+int qcom_iommu_set_fault_handler(struct iommu_domain *domain,
+				 iommu_fault_handler_t handler, void *token)
+{
+	struct qcom_iommu_ops *ops = to_qcom_iommu_ops(domain->ops);
+
+	if (!ops || unlikely(ops->set_fault_handler == NULL))
+		return -EINVAL;
+
+	ops->set_fault_handler(domain, handler, token);
+	return 0;
+}
+EXPORT_SYMBOL(qcom_iommu_set_fault_handler);
+
+int qcom_iommu_set_fault_handler_irq(struct iommu_domain *domain,
+				     fault_handler_irq_t handler_irq, void *token)
+{
+	struct qcom_iommu_ops *ops = to_qcom_iommu_ops(domain->ops);
+
+	if (!ops || unlikely(ops->set_fault_handler_irq == NULL))
+		return -EINVAL;
+
+	ops->set_fault_handler_irq(domain, handler_irq, token);
+	return 0;
+}
+EXPORT_SYMBOL(qcom_iommu_set_fault_handler_irq);
+
 int qcom_iommu_enable_s1_translation(struct iommu_domain *domain)
 {
 	struct qcom_iommu_ops *ops = to_qcom_iommu_ops(domain->ops);
