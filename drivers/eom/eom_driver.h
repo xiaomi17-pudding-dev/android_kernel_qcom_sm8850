@@ -98,4 +98,7 @@ enum eom_dev_sequence_index {
 	EOM_MAX_DEVICES
 };
 
+/* PCIe EOM sequence of the SoC; eom_driver.c has a weak fallback */
+int phy_pcie_eom_sequence(struct eom_lane *lane);
+
 #endif /* EOM_DRIVER_H */
