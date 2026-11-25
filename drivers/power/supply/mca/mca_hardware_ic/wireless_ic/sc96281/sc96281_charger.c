@@ -234,7 +234,7 @@ write_fail:
 
 static int sc96281_rx_set_cmd(struct sc96281 *sc, uint32_t cmd);
 
-__maybe_unused int sc96281_get_chipid(struct sc96281 *sc, uint16_t *chip_id)
+static __maybe_unused int sc96281_get_chipid(struct sc96281 *sc, uint16_t *chip_id)
 {
 	int ret;
 
@@ -300,7 +300,7 @@ __maybe_unused static int sc96281_get_gitver(struct sc96281 *sc,
 	return ret;
 }
 
-__maybe_unused int sc96281_get_mcode(struct sc96281 *sc, uint32_t *mcode)
+static __maybe_unused int sc96281_get_mcode(struct sc96281 *sc, uint32_t *mcode)
 {
 	int ret;
 
@@ -312,7 +312,7 @@ __maybe_unused int sc96281_get_mcode(struct sc96281 *sc, uint32_t *mcode)
 	return ret;
 }
 
-int sc96281_get_tdie(struct sc96281 *sc, uint16_t *tdie)
+static int sc96281_get_tdie(struct sc96281 *sc, uint16_t *tdie)
 {
 	int ret;
 
@@ -326,7 +326,7 @@ int sc96281_get_tdie(struct sc96281 *sc, uint16_t *tdie)
 	return ret;
 }
 
-int sc96281_check_i2c(struct sc96281 *sc)
+static int sc96281_check_i2c(struct sc96281 *sc)
 {
 	int ret = 0;
 	uint8_t data = 0x55;
@@ -394,7 +394,7 @@ static int sc96281_rx_get_cust_flag(struct sc96281 *sc, uint32_t *func_flag)
 	return ret;
 }
 
-__maybe_unused int sc96281_rx_get_mode(struct sc96281 *sc, bool *is_epp)
+static __maybe_unused int sc96281_rx_get_mode(struct sc96281 *sc, bool *is_epp)
 {
 	int ret;
 	uint32_t rx_mode;
@@ -416,7 +416,7 @@ __maybe_unused int sc96281_rx_get_mode(struct sc96281 *sc, bool *is_epp)
 	return ret;
 }
 
-__maybe_unused int sc96281_rx_get_ce_value(struct sc96281 *sc, int8_t *ce)
+static __maybe_unused int sc96281_rx_get_ce_value(struct sc96281 *sc, int8_t *ce)
 {
 	int ret;
 
@@ -427,7 +427,7 @@ __maybe_unused int sc96281_rx_get_ce_value(struct sc96281 *sc, int8_t *ce)
 	return ret;
 }
 
-__maybe_unused int sc96281_rx_get_frequecy(struct sc96281 *sc, uint16_t *freq)
+static __maybe_unused int sc96281_rx_get_frequecy(struct sc96281 *sc, uint16_t *freq)
 {
 	int ret;
 
@@ -439,7 +439,7 @@ __maybe_unused int sc96281_rx_get_frequecy(struct sc96281 *sc, uint16_t *freq)
 	return ret;
 }
 
-int sc96281_rx_get_vrect(struct sc96281 *sc, uint16_t *vrect)
+static int sc96281_rx_get_vrect(struct sc96281 *sc, uint16_t *vrect)
 {
 	int ret;
 
@@ -453,7 +453,7 @@ int sc96281_rx_get_vrect(struct sc96281 *sc, uint16_t *vrect)
 	return ret;
 }
 
-int sc96281_rx_get_vout(struct sc96281 *sc, uint16_t *volt)
+static int sc96281_rx_get_vout(struct sc96281 *sc, uint16_t *volt)
 {
 	int ret;
 
@@ -467,7 +467,7 @@ int sc96281_rx_get_vout(struct sc96281 *sc, uint16_t *volt)
 	return ret;
 }
 
-int sc96281_rx_get_iout(struct sc96281 *sc, uint16_t *curr)
+static int sc96281_rx_get_iout(struct sc96281 *sc, uint16_t *curr)
 {
 	int ret;
 
@@ -481,7 +481,7 @@ int sc96281_rx_get_iout(struct sc96281 *sc, uint16_t *curr)
 	return ret;
 }
 
-int sc96281_rx_set_Vout(struct sc96281 *sc, uint16_t vout)
+static int sc96281_rx_set_Vout(struct sc96281 *sc, uint16_t vout)
 {
 	int ret;
 
@@ -498,7 +498,7 @@ int sc96281_rx_set_Vout(struct sc96281 *sc, uint16_t vout)
 	return ret;
 }
 
-__maybe_unused int sc96281_rx_set_Ilimit(struct sc96281 *sc, uint16_t ilimt)
+static __maybe_unused int sc96281_rx_set_Ilimit(struct sc96281 *sc, uint16_t ilimt)
 {
 	int ret;
 
@@ -515,7 +515,7 @@ __maybe_unused int sc96281_rx_set_Ilimit(struct sc96281 *sc, uint16_t ilimt)
 	return ret;
 }
 
-__maybe_unused int sc96281_rx_set_vout_ovp(struct sc96281 *sc, uint16_t vovp)
+static __maybe_unused int sc96281_rx_set_vout_ovp(struct sc96281 *sc, uint16_t vovp)
 {
 	int ret;
 
@@ -532,7 +532,7 @@ __maybe_unused int sc96281_rx_set_vout_ovp(struct sc96281 *sc, uint16_t vovp)
 	return ret;
 }
 
-__maybe_unused int sc96281_rx_set_vout_ocp(struct sc96281 *sc, uint16_t iocp)
+static __maybe_unused int sc96281_rx_set_vout_ocp(struct sc96281 *sc, uint16_t iocp)
 {
 	int ret;
 
@@ -549,7 +549,7 @@ __maybe_unused int sc96281_rx_set_vout_ocp(struct sc96281 *sc, uint16_t iocp)
 	return ret;
 }
 
-__maybe_unused int sc96281_rx_set_otp(struct sc96281 *sc, uint16_t otp)
+static __maybe_unused int sc96281_rx_set_otp(struct sc96281 *sc, uint16_t otp)
 {
 	int ret;
 
@@ -566,7 +566,7 @@ __maybe_unused int sc96281_rx_set_otp(struct sc96281 *sc, uint16_t otp)
 	return ret;
 }
 
-__maybe_unused int sc96281_rx_send_ept(struct sc96281 *sc, ept_reason_t ept_v)
+static __maybe_unused int sc96281_rx_send_ept(struct sc96281 *sc, ept_reason_t ept_v)
 {
 	int ret;
 
@@ -583,7 +583,7 @@ __maybe_unused int sc96281_rx_send_ept(struct sc96281 *sc, ept_reason_t ept_v)
 	return ret;
 }
 
-int sc96281_rx_recv_fsk_pkt(struct sc96281 *sc, fsk_pkt_t *fsk)
+static int sc96281_rx_recv_fsk_pkt(struct sc96281 *sc, fsk_pkt_t *fsk)
 {
 	int ret;
 
@@ -595,7 +595,7 @@ int sc96281_rx_recv_fsk_pkt(struct sc96281 *sc, fsk_pkt_t *fsk)
 	return ret;
 }
 
-int sc96281_rx_send_ask_pkt(struct sc96281 *sc, ask_pkt_t *ask, bool is_resp)
+static int sc96281_rx_send_ask_pkt(struct sc96281 *sc, ask_pkt_t *ask, bool is_resp)
 {
 	int ret;
 
@@ -622,7 +622,7 @@ int sc96281_rx_send_ask_pkt(struct sc96281 *sc, ask_pkt_t *ask, bool is_resp)
 	return ret;
 }
 
-__maybe_unused int sc96281_rx_config_bpp_fod(struct sc96281 *sc,
+static __maybe_unused int sc96281_rx_config_bpp_fod(struct sc96281 *sc,
 					     fod_type_t *fod)
 {
 	int ret;

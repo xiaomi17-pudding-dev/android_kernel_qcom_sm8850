@@ -1126,7 +1126,7 @@ static const struct file_operations fp_fops = {
 };
 
 #ifdef FP_ULTRA_QCOM
-int fp_ultra_dev_register(void)
+static int fp_ultra_dev_register(void)
 {
 	struct fp_device *fp_dev = &fp;
 	struct device *device;
@@ -1166,7 +1166,7 @@ err_ipc_cdev:
     return status;
 }
 
-void fp_ultra_dev_unregister(void)
+static void fp_ultra_dev_unregister(void)
 {
 	struct fp_device *fp_dev = &fp;
 
@@ -1185,7 +1185,7 @@ static struct fp_key_map maps[] = {
         {EV_KEY, FP_KEY_DOUBLE_CLICK},
 };
 
-int fp_create_input_device(void)
+static int fp_create_input_device(void)
 {
 	struct fp_device *fp_dev = &fp;
 	int status = 0;
@@ -1223,7 +1223,7 @@ err_input:
 	return status;
 }
 
-void fp_free_input_device(void)
+static void fp_free_input_device(void)
 {
 	struct fp_device *fp_dev = &fp;
 

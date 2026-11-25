@@ -4521,7 +4521,7 @@ u8 code_version_crc16[16] = {
 	0xe2, 0x1a, 0xfb, 0x9e, 0x38, 0xc2, 0x38, 0xc2,
 };
 
-u8 GetCRC8(u8 *buf, int len)
+static u8 GetCRC8(u8 *buf, int len)
 {
 	int crc = 0, i;
 

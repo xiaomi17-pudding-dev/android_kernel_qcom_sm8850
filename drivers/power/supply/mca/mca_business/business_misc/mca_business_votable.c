@@ -32,6 +32,7 @@
 #include <linux/platform_device.h>
 #include <mca/common/mca_log.h>
 #include <mca/common/mca_voter.h>
+#include "inc/mca_business_misc.h"
 
 #ifndef MCA_LOG_TAG
 #define MCA_LOG_TAG "mca_business_voter"

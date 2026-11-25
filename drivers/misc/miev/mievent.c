@@ -36,7 +36,7 @@ err:
 }
 EXPORT_SYMBOL_GPL(cdev_tevent_alloc);
 
-int get_integer_size(long number)
+static int get_integer_size(long number)
 {
 	int num_count = 0;
 	long tmp = 0;
@@ -117,7 +117,7 @@ int cdev_tevent_add_str(struct misight_mievent *event, const char *key,
 }
 EXPORT_SYMBOL_GPL(cdev_tevent_add_str);
 
-int to_format(struct misight_mievent *event, char *jsonstr)
+static int to_format(struct misight_mievent *event, char *jsonstr)
 {
 	struct mievent_payload *p;
 	sprintf(jsonstr, "EventId %d -t %lld -paraList ", event->eventid,
@@ -150,7 +150,7 @@ int to_format(struct misight_mievent *event, char *jsonstr)
 	pr_devel("jsonstr:%s", jsonstr);
 	return 0;
 }
-void free_list(struct mievent_payload *head)
+static void free_list(struct mievent_payload *head)
 {
 	struct mievent_payload *p;
 	struct mievent_payload *q;

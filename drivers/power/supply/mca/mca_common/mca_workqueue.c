@@ -21,6 +21,7 @@
 #include <linux/kernel.h>
 #include <linux/workqueue.h>
 #include <mca/common/mca_log.h>
+#include <mca/common/mca_workqueue.h>
 
 #ifndef MCA_LOG_TAG
 #define MCA_LOG_TAG "mca_workqueue"
