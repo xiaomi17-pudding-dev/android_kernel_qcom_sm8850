@@ -450,7 +450,7 @@ void stmmac_disable_eee_mode(struct stmmac_priv *priv)
 	}
 
 	stmmac_reset_eee_mode(priv, priv->hw);
-	del_timer_sync(&priv->eee_ctrl_timer);
+	timer_delete_sync(&priv->eee_ctrl_timer);
 	priv->tx_path_in_lpi_mode = false;
 }
 
@@ -463,7 +463,7 @@ void stmmac_disable_eee_mode(struct stmmac_priv *priv)
  */
 static void stmmac_eee_ctrl_timer(struct timer_list *t)
 {
-	struct stmmac_priv *priv = from_timer(priv, t, eee_ctrl_timer);
+	struct stmmac_priv *priv = timer_container_of(priv, t, eee_ctrl_timer);
 
 	if (stmmac_enable_eee_mode(priv))
 		mod_timer(&priv->eee_ctrl_timer, STMMAC_LPI_T(priv->tx_lpi_timer));
@@ -492,7 +492,7 @@ bool stmmac_eee_init(struct stmmac_priv *priv)
 		if (priv->eee_enabled) {
 			netdev_dbg(priv->dev, "disable EEE\n");
 			stmmac_lpi_entry_timer_config(priv, 0);
-			del_timer_sync(&priv->eee_ctrl_timer);
+			timer_delete_sync(&priv->eee_ctrl_timer);
 			stmmac_set_eee_timer(priv, priv->hw, 0, eee_tw_timer);
 			if (priv->hw->xpcs)
 				xpcs_config_eee(priv->hw->xpcs,
@@ -514,7 +514,7 @@ bool stmmac_eee_init(struct stmmac_priv *priv)
 	}
 
 	if (priv->plat->has_gmac4 && priv->tx_lpi_timer <= STMMAC_ET_MAX) {
-		del_timer_sync(&priv->eee_ctrl_timer);
+		timer_delete_sync(&priv->eee_ctrl_timer);
 		priv->tx_path_in_lpi_mode = false;
 		stmmac_lpi_entry_timer_config(priv, 1);
 	} else {
@@ -4197,7 +4197,7 @@ static int stmmac_release(struct net_device *dev)
 
 	if (priv->eee_enabled) {
 		priv->tx_path_in_lpi_mode = false;
-		del_timer_sync(&priv->eee_ctrl_timer);
+		timer_delete_sync(&priv->eee_ctrl_timer);
 	}
 
 	/* Stop TX/RX DMA and clear the descriptors */
@@ -7602,7 +7602,7 @@ int stmmac_reinit_ringparam(struct net_device *dev, u32 rx_size, u32 tx_size)
  */
 static void stmmac_fpe_verify_timer(struct timer_list *t)
 {
-	struct stmmac_fpe_cfg *fpe_cfg = from_timer(fpe_cfg, t, verify_timer);
+	struct stmmac_fpe_cfg *fpe_cfg = timer_container_of(fpe_cfg, t, verify_timer);
 	struct stmmac_priv *priv = container_of(fpe_cfg, struct stmmac_priv,
 						fpe_cfg);
 	unsigned long flags;
@@ -8108,7 +8108,7 @@ int stmmac_suspend(struct device *dev)
 
 	if (priv->eee_enabled) {
 		priv->tx_path_in_lpi_mode = false;
-		del_timer_sync(&priv->eee_ctrl_timer);
+		timer_delete_sync(&priv->eee_ctrl_timer);
 	}
 
 	/* Stop TX/RX DMA */
