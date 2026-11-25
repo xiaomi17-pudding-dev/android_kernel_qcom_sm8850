@@ -391,11 +391,7 @@ static int qcom_cc_icc_register(struct device *dev,
 	struct clk_hw *hws;
 	int i;
 
-	/*
-	 * COMMON_CLK_QCOM selects INTERCONNECT_CLK in 6.18, but the GKI kernel does
-	 * not build icc-clk and volcano has no interconnect clocks.
-	 */
-	if (!IS_BUILTIN(CONFIG_INTERCONNECT_CLK))
+	if (!IS_ENABLED(CONFIG_INTERCONNECT_CLK))
 		return 0;
 
 	if (!desc->icc_hws)
