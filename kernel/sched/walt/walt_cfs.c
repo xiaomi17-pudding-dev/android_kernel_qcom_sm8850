@@ -1198,6 +1198,15 @@ walt_select_task_rq_fair(void *unused, struct task_struct *p, int prev_cpu,
 	update_instruction_data(SELECT_TASK_RQ_FAIR);
 }
 
+/*
+ * A synchronous request that waits for a reply. binder_transaction lost its
+ * need_reply bit on android17-6.18; it was set for exactly these transactions.
+ */
+static inline bool walt_binder_need_reply(struct binder_transaction *t)
+{
+	return !t->is_reply && !(t->flags & TF_ONE_WAY);
+}
+
 static void binder_set_priority_hook(void *data,
 				struct binder_transaction *bndrtrans, struct task_struct *task)
 {
@@ -1212,7 +1221,8 @@ static void binder_set_priority_hook(void *data,
 		return;
 
 	get_entry_instr(BINDER_SET_PRIORITY_HOOK);
-	if (bndrtrans && bndrtrans->need_reply && current_wts->boost == TASK_BOOST_STRICT_MAX) {
+	if (bndrtrans && walt_binder_need_reply(bndrtrans) &&
+	    current_wts->boost == TASK_BOOST_STRICT_MAX) {
 		bndrtrans->android_vendor_data1  = wts->boost;
 		wts->boost = TASK_BOOST_STRICT_MAX;
 	}
@@ -1241,10 +1251,11 @@ out:
 	update_instruction_data(BINDER_RESTORE_PRIORITY_HOOK);
 }
 
+/* The hook ran for current before android17-6.18 passed it as an argument */
 static void binder_restore_priority_hook(void *data,
-				struct binder_transaction *bndrtrans, struct task_struct *task)
+				struct binder_transaction *bndrtrans)
 {
-	struct walt_task_struct *wts = (struct walt_task_struct *)android_task_vendor_data(task);
+	struct walt_task_struct *wts = (struct walt_task_struct *)android_task_vendor_data(current);
 
 	if (unlikely(walt_disabled))
 		return;
@@ -1480,7 +1491,7 @@ void walt_cfs_tick(struct rq *rq)
 	 * see if we can run any other task including MVP tasks.
 	 */
 	if (((skip_mvp != wrq->skip_mvp) ||
-		(wrq->mvp_tasks.next != &wts->mvp_list)) && rq->cfs.h_nr_running > 1)
+		(wrq->mvp_tasks.next != &wts->mvp_list)) && rq->cfs.h_nr_queued > 1)
 		resched_curr(rq);
 }
 
@@ -1560,7 +1571,6 @@ preempt:
 		for (; se; se = NULL)
 #endif
 
-extern void set_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *se);
 static void walt_cfs_replace_next_task_fair(void *unused, struct rq *rq, struct task_struct **p,
 					    struct task_struct *prev)
 {

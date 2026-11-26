@@ -119,7 +119,7 @@ static void migrate_tasks(struct rq *dead_rq, struct rq_flags *rf)
 		if (rq->nr_running == 1)
 			break;
 
-		next = pick_task(rq);
+		next = pick_task(rq, rf);
 
 		if (walt_is_idle_task(next))
 			break;
