@@ -1654,6 +1654,7 @@ extern void update_smart_freq_capacities_one_cluster(struct walt_sched_cluster *
 
 extern int add_pipeline(struct walt_task_struct *wts);
 extern int remove_pipeline(struct walt_task_struct *wts);
+extern void remove_heavy(struct walt_task_struct *wts);
 
 extern void walt_task_dump(struct task_struct *p);
 extern void walt_rq_dump(int cpu);

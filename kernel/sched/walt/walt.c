@@ -3100,7 +3100,6 @@ static void init_new_task_load(struct task_struct *p)
 	walt_flag_set(p, WALT_GIANT_BIT, 0);
 }
 
-int remove_heavy(struct walt_task_struct *wts);
 static int __sched_set_group_id(struct task_struct *p, unsigned int group_id);
 static void walt_task_dead(struct task_struct *p)
 {

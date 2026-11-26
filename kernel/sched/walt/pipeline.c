@@ -268,7 +268,7 @@ static inline bool should_pipeline_pin_special(void)
 }
 
 #define PIPELINE_BIAS_WINDOW_SIZE 5
-int load_cmp_func(const void *tsk1, const void *tsk2)
+static int load_cmp_func(const void *tsk1, const void *tsk2)
 {
 	struct walt_task_struct **wts1 = (struct walt_task_struct **)tsk1;
 	struct walt_task_struct **wts2 = (struct walt_task_struct **)tsk2;
@@ -289,7 +289,7 @@ int load_cmp_func(const void *tsk1, const void *tsk2)
 #define LST_LOW_DEMAND_PENALTY		5
 #define MAX_ACTIVITY_CNT		250
 #define LST_PIPELINE_SKIP_THRESHOLD	25
-int find_heaviest_topapp(u64 window_start)
+static int find_heaviest_topapp(u64 window_start)
 {
 	struct walt_related_thread_group *grp;
 	struct walt_task_struct *wts;
@@ -714,7 +714,7 @@ static inline bool is_prime_worthy(struct walt_task_struct *wts)
 	return !task_fits_max(p, cpumask_last(&cpu_array[0][pipeline_lower_cluster_id]));
 }
 
-void rearrange_heavy(u64 window_start, bool force)
+static void rearrange_heavy(u64 window_start, bool force)
 {
 	struct walt_task_struct *prime_wts = NULL;
 	struct walt_task_struct *other_wts = NULL;
@@ -1105,7 +1105,7 @@ unlock:
 	raw_spin_unlock(&heavy_lock);
 }
 
-void rearrange_pipeline_preferred_cpus(u64 window_start)
+static void rearrange_pipeline_preferred_cpus(u64 window_start)
 {
 	unsigned long flags;
 	struct walt_task_struct *wts;
