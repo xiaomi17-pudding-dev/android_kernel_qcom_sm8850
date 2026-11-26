@@ -49,7 +49,7 @@ static void setup_prev_cnts(u32 cpu, u32 cnten_val)
 	}
 }
 
-void tracectr_notifier(void *ignore, bool preempt,
+static void tracectr_notifier(void *ignore, bool preempt,
 			struct task_struct *prev, struct task_struct *next,
 			unsigned int prev_state)
 {
@@ -105,7 +105,7 @@ static void unregister_sched_switch_ctrs(void)
 	cpuhp_remove_state_nocalls(USE_CPUHP_STATE);
 }
 
-const struct cpumask *sched_trace_rd_span(struct root_domain *rd)
+static const struct cpumask *sched_trace_rd_span(struct root_domain *rd)
 {
 #ifdef CONFIG_SMP
 	return rd ? rd->span : NULL;

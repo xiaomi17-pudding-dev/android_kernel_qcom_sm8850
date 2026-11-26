@@ -42,7 +42,7 @@ static DEFINE_RAW_SPINLOCK(walt_drain_pending_lock);
  * should prevent migrations for the detached task and disallow further
  * changes to tsk_cpus_allowed.
  */
-void
+static void
 detach_one_task_core(struct task_struct *p, struct rq *rq,
 		     struct list_head *tasks)
 {
@@ -53,7 +53,7 @@ detach_one_task_core(struct task_struct *p, struct rq *rq,
 	list_add(&p->se.group_node, tasks);
 }
 
-void attach_tasks_core(struct list_head *tasks, struct rq *rq)
+static void attach_tasks_core(struct list_head *tasks, struct rq *rq)
 {
 	struct task_struct *p;
 
@@ -270,7 +270,7 @@ static int __ref try_drain_rqs(void *data)
 	return 0;
 }
 
-void restrict_cpus_and_freq(struct cpumask *cpus)
+static void restrict_cpus_and_freq(struct cpumask *cpus)
 {
 	struct cpumask restrict_cpus;
 	int cpu = 0;

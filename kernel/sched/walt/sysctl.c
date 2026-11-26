@@ -744,7 +744,7 @@ static void sched_update_updown_migrate_values(bool up)
 }
 
 static DEFINE_MUTEX(sysctl_cgroup_mutex);
-int sched_updown_migrate_handler(const struct ctl_table *table, int write,
+static int sched_updown_migrate_handler(const struct ctl_table *table, int write,
 				void __user *buffer, size_t *lenp,
 				loff_t *ppos)
 {
@@ -819,7 +819,7 @@ unlock_mutex:
 }
 
 
-int sched_cgroup_updown_migrate_handler(const struct ctl_table *table, int write,
+static int sched_cgroup_updown_migrate_handler(const struct ctl_table *table, int write,
 				void __user *buffer, size_t *lenp,
 				loff_t *ppos)
 {
@@ -949,7 +949,7 @@ static void sched_update_updown_early_migrate_values(bool up)
 	}
 }
 
-int sched_updown_early_migrate_handler(const struct ctl_table *table, int write,
+static int sched_updown_early_migrate_handler(const struct ctl_table *table, int write,
 				void __user *buffer, size_t *lenp,
 				loff_t *ppos)
 {
@@ -1021,7 +1021,7 @@ unlock_mutex:
 	return ret;
 }
 
-int sched_freq_cap_handler(const struct ctl_table *table, int write,
+static int sched_freq_cap_handler(const struct ctl_table *table, int write,
 		void __user *buffer, size_t *lenp,
 		loff_t *ppos)
 {
@@ -1066,7 +1066,7 @@ unlock_mutex:
 
 static DEFINE_MUTEX(idle_enough_mutex);
 
-int sched_idle_enough_handler(const struct ctl_table *table, int write,
+static int sched_idle_enough_handler(const struct ctl_table *table, int write,
 			      void __user *buffer, size_t *lenp,
 			      loff_t *ppos)
 {
@@ -1089,7 +1089,7 @@ unlock_mutex:
 	return ret;
 }
 
-int sched_idle_enough_clust_handler(const struct ctl_table *table, int write,
+static int sched_idle_enough_clust_handler(const struct ctl_table *table, int write,
 				    void __user *buffer, size_t *lenp,
 				    loff_t *ppos)
 {
@@ -1129,7 +1129,7 @@ unlock_mutex:
 
 static DEFINE_MUTEX(util_thres_mutex);
 
-int sched_cluster_util_thres_pct_handler(const struct ctl_table *table, int write,
+static int sched_cluster_util_thres_pct_handler(const struct ctl_table *table, int write,
 					 void __user *buffer, size_t *lenp,
 					 loff_t *ppos)
 {
@@ -1152,7 +1152,7 @@ unlock_mutex:
 	return ret;
 }
 
-int sched_cluster_util_thres_pct_clust_handler(const struct ctl_table *table, int write,
+static int sched_cluster_util_thres_pct_clust_handler(const struct ctl_table *table, int write,
 					       void __user *buffer, size_t *lenp,
 					       loff_t *ppos)
 {
@@ -1191,7 +1191,7 @@ unlock_mutex:
 }
 
 static DEFINE_MUTEX(load_sync_mutex);
-int sched_load_sync_handler(const struct ctl_table *table, int write,
+static int sched_load_sync_handler(const struct ctl_table *table, int write,
 					       void __user *buffer, size_t *lenp,
 					       loff_t *ppos)
 {

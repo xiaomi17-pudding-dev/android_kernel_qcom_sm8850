@@ -1030,7 +1030,7 @@ repin:
 }
 
 /* run newidle balance as a result of an unhalt operation */
-void walt_smp_newidle_balance(void *ignored)
+static void walt_smp_newidle_balance(void *ignored)
 {
 	int cpu = raw_smp_processor_id();
 	struct rq *rq = cpu_rq(cpu);

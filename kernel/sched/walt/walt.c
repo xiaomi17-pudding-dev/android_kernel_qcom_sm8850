@@ -801,7 +801,7 @@ __cpu_util_freq_walt(int cpu, struct walt_cpu_load *walt_load, unsigned int *rea
 #define PIPELINE_SYNC_VAL(first, second, x)       \
 	(max(first, mult_frac(second, x, 100)))
 
-int other_sync_pct(unsigned long util_other)
+static int other_sync_pct(unsigned long util_other)
 {
 	int pct;
 
@@ -825,7 +825,7 @@ int other_sync_pct(unsigned long util_other)
 	return pct;
 }
 
-int prime_sync_pct(unsigned long util_prime)
+static int prime_sync_pct(unsigned long util_prime)
 {
 	int pct;
 

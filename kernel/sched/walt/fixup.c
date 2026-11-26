@@ -95,7 +95,7 @@ release_sem:
 	return found;
 }
 
-bool is_sched_lib_task(void)
+static bool is_sched_lib_task(void)
 {
 	if (strnlen(sched_lib_task, LIB_PATH_LENGTH) == 0)
 		return false;

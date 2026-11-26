@@ -268,7 +268,7 @@ out:
 	return freq;
 }
 
-void post_update_cleanups(struct waltgov_policy *wg_policy)
+static void post_update_cleanups(struct waltgov_policy *wg_policy)
 {
 	struct cpufreq_policy *policy = wg_policy->policy;
 	int cpu;
@@ -915,7 +915,7 @@ static ssize_t boost_store(struct gov_attr_set *attr_set, const char *buf,
  * values gathered from sysfs node in the internally maintained wg_policy
  * structure data member, zone_util.
  */
-void update_util_inflate_factor(struct waltgov_tunables *tunables,
+static void update_util_inflate_factor(struct waltgov_tunables *tunables,
 		struct waltgov_policy *wg_policy)
 {
 	unsigned long fmax, cap;
@@ -935,7 +935,7 @@ void update_util_inflate_factor(struct waltgov_tunables *tunables,
 	}
 }
 
-void set_default_zone_util_pct_values(struct waltgov_tunables *tunables,
+static void set_default_zone_util_pct_values(struct waltgov_tunables *tunables,
 		struct waltgov_policy *wg_policy)
 {
 	int i, j;

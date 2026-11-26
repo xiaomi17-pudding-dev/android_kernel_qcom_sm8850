@@ -306,7 +306,7 @@ static inline bool walt_should_reject_fbt_cpu(struct walt_rq *wrq, struct task_s
 	return false;
 }
 
-bool select_prev_cpu_fastpath(int prev_cpu, int start_cpu, int order_index,
+static bool select_prev_cpu_fastpath(int prev_cpu, int start_cpu, int order_index,
 		struct task_struct *p)
 {
 	struct walt_rq *prev_wrq = &per_cpu(walt_rq, prev_cpu);

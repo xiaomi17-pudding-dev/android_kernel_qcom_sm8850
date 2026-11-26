@@ -1428,7 +1428,7 @@ bool now_is_sbt;
  * note: depends on update_running_average
  * note: must be called every window rollover
  */
-void sbt_ctl_check(u32 wakeup_ctr_sum)
+static void sbt_ctl_check(u32 wakeup_ctr_sum)
 {
 	static int prev_is_sbt_windows;
 	now_is_sbt = core_ctl_is_sbt(prev_is_sbt_windows, wakeup_ctr_sum);
